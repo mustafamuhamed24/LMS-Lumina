@@ -974,16 +974,31 @@ function drawCover(doc: PDFDocument, regular: PDFFont, bold: PDFFont) {
     page.drawText(line, { x: 54, y: height - 330 - index * 24, size: 14, font: regular, color: rgb(0.79, 0.81, 0.9) });
   });
 
-  const meta = [
-    ['Edition', 'Version 1.0'],
-    ['Audience', 'Platform owners, admins, instructors'],
-    ['Stack', 'Next.js 16, Supabase, Postgres RLS'],
-  ];
-  meta.forEach(([label, value], index) => {
-    const y = 252 - index * 46;
-    page.drawText(label.toUpperCase(), { x: 54, y, size: 7.5, font: bold, color: rgb(0.55, 0.58, 0.72) });
-    page.drawText(value ?? '', { x: 54, y: y - 17, size: 10.5, font: regular, color: white });
+const meta: [string, string][] = [
+  ['Edition', 'Version 1.0'],
+  ['Audience', 'Platform owners, admins, instructors'],
+  ['Stack', 'Next.js 16, Supabase, Postgres RLS'],
+];
+
+meta.forEach(([label, value], index) => {
+  const y = 252 - index * 46;
+
+  page.drawText(label.toUpperCase(), {
+    x: 54,
+    y,
+    size: 7.5,
+    font: bold,
+    color: rgb(0.55, 0.58, 0.72),
   });
+
+  page.drawText(value, {
+    x: 54,
+    y: y - 17,
+    size: 10.5,
+    font: regular,
+    color: white,
+  });
+});
 
   page.drawLine({ start: { x: 54, y: 118 }, end: { x: width - 54, y: 118 }, color: rgb(0.3, 0.32, 0.48), thickness: 0.7 });
   page.drawText('Lumina LMS', { x: 54, y: 96, size: 9, font: bold, color: rgb(0.72, 0.74, 0.86) });
