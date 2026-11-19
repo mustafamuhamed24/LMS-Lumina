@@ -119,7 +119,8 @@ file_size_limit = "50MiB"
 [auth]
 enabled = true
 # The base URL of your website. Used as an allow-list for redirects and for constructing URLs used
-# in emails.
+# in emails. In a hosted project set this to the deployed domain (for example
+# https://lumina.example.com) and add the same domain to the redirect allow-list.
 site_url = "http://localhost:3000"
 # A list of *exact* URLs that auth providers are permitted to redirect to post authentication.
 additional_redirect_urls = [
@@ -188,20 +189,39 @@ otp_length = 6
 # Number of seconds before the email OTP expires (defaults to 1 hour).
 otp_expiry = 3600
 
-# Use a production-ready SMTP server
+# Use a production-ready SMTP server so auth mail is sent from your own
+# domain (Lumina LMS), not from a shared mailer. Hosted projects configure the
+# same values in Supabase Dashboard -> Authentication -> Emails -> SMTP.
 # [auth.email.smtp]
 # enabled = true
-# host = "smtp.sendgrid.net"
+# host = "smtp.resend.com"
 # port = 587
-# user = "apikey"
-# pass = "env(SENDGRID_API_KEY)"
-# admin_email = "admin@email.com"
-# sender_name = "Admin"
+# user = "resend"
+# pass = "env(SMTP_PASS)"
+# admin_email = "no-reply@your-domain.com"
+# sender_name = "Lumina LMS"
 
-# Uncomment to customize email template
-# [auth.email.template.invite]
-# subject = "You have been invited"
-# content_path = "./supabase/templates/invite.html"
+# Branded auth email templates. Hosted projects copy the HTML into
+# Supabase Dashboard -> Authentication -> Emails -> Templates.
+[auth.email.template.confirmation]
+subject = "Confirm your Lumina LMS account"
+content_path = "./supabase/templates/confirmation.html"
+
+[auth.email.template.recovery]
+subject = "Reset your Lumina LMS password"
+content_path = "./supabase/templates/recovery.html"
+
+[auth.email.template.magic_link]
+subject = "Your Lumina LMS sign-in link"
+content_path = "./supabase/templates/magic_link.html"
+
+[auth.email.template.invite]
+subject = "You are invited to Lumina LMS"
+content_path = "./supabase/templates/invite.html"
+
+[auth.email.template.email_change]
+subject = "Confirm your new Lumina LMS email"
+content_path = "./supabase/templates/email_change.html"
 
 [auth.sms]
 # Allow/disallow new user signups via SMS to your project.

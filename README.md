@@ -10,6 +10,8 @@ certificates with public verification, notifications and real database-driven an
 
 - **Platform guide (PDF):** [`docs/Lumina-LMS-Platform-Guide.pdf`](docs/Lumina-LMS-Platform-Guide.pdf)
   — regenerate with `npm run docs:pdf`
+- **Deployment:** [`DEPLOYMENT.md`](DEPLOYMENT.md) — hosted Supabase, Vercel, owner login and
+  branded confirmation email
 - **Architecture:** [`PROJECT_ARCHITECTURE.md`](PROJECT_ARCHITECTURE.md)
 - **Database & RLS:** [`DATABASE_SCHEMA.md`](DATABASE_SCHEMA.md)
 - **Delivery plan & verification:** [`IMPLEMENTATION_PLAN.md`](IMPLEMENTATION_PLAN.md)
@@ -324,17 +326,27 @@ but never hydrate in tests.
 
 ## Deployment
 
+The full walkthrough is in [`DEPLOYMENT.md`](DEPLOYMENT.md). In short:
+
 1. Create a Supabase project and link it: `npx supabase link --project-ref <ref>`.
 2. Push migrations: `npx supabase db push`. Do not create tables by hand.
-3. Configure the storage buckets from the migrations and keep `course-media` / `submissions` private.
-4. Set environment variables on the host: `NEXT_PUBLIC_SUPABASE_URL`,
-   `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `NEXT_PUBLIC_APP_URL`.
-5. In Supabase Auth, set the site URL and redirect allow-list to your real domain, and configure SMTP
-   for confirmation and password-reset emails.
-6. Create the platform owner: `npm run admin:create -- owner@example.com "Owner" "StrongPass!" <org-slug>`.
-7. Build and start, then smoke-test: sign in as each role, request/approve teaching access, enroll,
-   complete a lesson, take a quiz, submit an assignment, download a certificate and verify it
-   publicly.
+3. Keep `course-media` / `submissions` private; only `avatars` is public.
+4. Set `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`,
+   `SUPABASE_SERVICE_ROLE_KEY` and `NEXT_PUBLIC_APP_URL` in the host. Use
+   [`.env.production.example`](.env.production.example) as the checklist.
+5. In Supabase Auth, set **Site URL** and the redirect allow-list to the deployed domain. Add
+   `https://your-domain.com/auth/callback`.
+6. Configure custom SMTP so confirmation and reset mail is sent as **Lumina LMS** from your domain,
+   then paste the branded files from [`supabase/templates/`](supabase/templates) into
+   **Authentication → Emails → Templates**.
+7. Create or recover the platform owner with
+   `npm run admin:create -- owner@example.com "Owner"`, then sign in at `/login`.
+8. Smoke-test signup, confirmation, password reset, all four roles, enrollment, a quiz, an
+   assignment, certificate download and public verification.
+
+`NEXT_PUBLIC_APP_URL` is embedded at build time; changing it requires a redeploy. If it is missing
+or still local, the app falls back to the request host, but Supabase still needs the deployed domain
+in its redirect allow-list.
 
 The app deploys to any Next.js-compatible host. Keep the service-role key in server-only environment
 storage; it bypasses RLS by design.

@@ -9,9 +9,18 @@ const ERROR_MESSAGES: Record<string, string> = {
   session_expired: 'Your session expired. Please sign in again.',
 };
 
-export default async function LoginPage({ searchParams }: { searchParams: Promise<{ next?: string; error?: string }> }) {
+const NOTICE_MESSAGES: Record<string, string> = {
+  confirmed: 'Your email is confirmed. Sign in to open your Lumina workspace.',
+};
+
+export default async function LoginPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ next?: string; error?: string; confirmed?: string }>;
+}) {
   const params = await searchParams;
   const errorMessage = params.error ? ERROR_MESSAGES[params.error] : undefined;
+  const noticeMessage = params.confirmed ? NOTICE_MESSAGES.confirmed : undefined;
 
   return (
     <AuthShell
@@ -19,6 +28,11 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
       description="Sign in to continue your learning, teaching or administration workspace."
     >
       <div className="space-y-4">
+        {noticeMessage ? (
+          <Alert variant="success">
+            <AlertDescription>{noticeMessage}</AlertDescription>
+          </Alert>
+        ) : null}
         {errorMessage ? (
           <Alert variant="destructive">
             <AlertDescription>{errorMessage}</AlertDescription>

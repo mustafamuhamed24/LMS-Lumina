@@ -858,6 +858,20 @@ function content(): Block[] {
       kind: 'p',
       text: 'Run npm run db:reset and npm run db:seed before the live checks. The RLS script signs in as real demo accounts and proves anonymous blocking, tenant isolation, quiz secrecy, privilege-escalation protection, instructor-request isolation and storage rules. E2E uses http://127.0.0.1:3000; the Next dev origin allow-list includes 127.0.0.1 and localhost so client components hydrate in tests.',
     },
+    { kind: 'h2', text: 'Branded authentication email' },
+    {
+      kind: 'p',
+      text: 'Supabase Auth sends signup and password-reset messages; the hosting provider does not. Configure custom SMTP with a verified sending domain and paste the templates in supabase/templates into Authentication, Emails, Templates. The templates use token_hash links, which the app verifies at /auth/callback, so confirmation works even when the message is opened on another device.',
+    },
+    {
+      kind: 'bullets',
+      items: [
+        'Set NEXT_PUBLIC_APP_URL to the deployed domain and mirror it in the Auth Site URL and redirect allow-list; add /auth/callback explicitly.',
+        'Send as a domain address such as no-reply@your-domain.com and publish SPF, DKIM and DMARC records so mail is not marked as spam.',
+        'Keep Confirm email enabled for public deployments. AUTO_CONFIRM_SIGNUPS=true skips the email for demos but does not verify address ownership.',
+        'After confirmation the person returns to /login with a confirmed notice, or straight to the dashboard when the browser already holds a session.',
+      ],
+    },
     { kind: 'h2', text: 'Deployment checklist' },
     {
       kind: 'steps',
@@ -865,9 +879,9 @@ function content(): Block[] {
         'Create a Supabase project and link it with supabase link.',
         'Push the migrations with supabase db push. Never edit production tables by hand.',
         'Set NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY, SUPABASE_SERVICE_ROLE_KEY and NEXT_PUBLIC_APP_URL in the hosting provider.',
-        'Set the Auth site URL and redirect allow-list to your real domain, and configure SMTP for confirmation and reset emails.',
+        'Set the Auth site URL and redirect allow-list to your real domain, configure custom SMTP and apply the branded templates.',
         'Run the owner bootstrap once, then sign in and confirm Platform control loads.',
-        'Build and start the app, then smoke-test: register, teacher request, approval, enrollment, lesson progress, quiz, assignment, certificate and public verification.',
+        'Build and start the app, then smoke-test: register, confirmation, teacher request, approval, enrollment, lesson progress, quiz, assignment, certificate and public verification.',
       ],
     },
     { kind: 'h2', text: 'Troubleshooting' },
@@ -876,7 +890,7 @@ function content(): Block[] {
       headers: ['Symptom', 'Fix'],
       rows: [
         ['Registration says signups are disabled', 'Enable allow_signups in platform settings.'],
-        ['Confirmation email never arrives', 'Local: open Mailpit. Hosted: check SMTP settings and spam.'],
+        ['Confirmation email never arrives', 'Local: open Mailpit. Hosted: verify custom SMTP, the sender domain and the Auth email log.'],
         ['Uploads fail after a fresh start', 'Run npm run db:seed or npm run db:compat to apply the storage compatibility index.'],
         ['A page renders but buttons do nothing in tests', 'Next 16 blocks cross-origin dev resources; keep 127.0.0.1 and localhost in allowedDevOrigins.'],
         ['Port 3000 is already in use', 'Stop the other process or run Playwright with PLAYWRIGHT_PORT.'],
@@ -927,6 +941,7 @@ function content(): Block[] {
       kind: 'bullets',
       items: [
         'README.md: setup, architecture summary, scripts and deployment checklist.',
+        'DEPLOYMENT.md: hosted Supabase, Vercel, owner recovery, SMTP, DNS and confirmation links.',
         'PROJECT_ARCHITECTURE.md: stack decisions, directory layout, authorization layers and data flow.',
         'DATABASE_SCHEMA.md: tables, functions, RLS policy map, storage and migrations.',
         'IMPLEMENTATION_PLAN.md: delivered phases and recorded verification results.',

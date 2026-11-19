@@ -3,7 +3,7 @@
 import { redirect } from 'next/navigation';
 import { createServerSupabaseClient } from '@/lib/supabase/server';
 import { createAdminClient } from '@/lib/supabase/admin';
-import { publicEnv } from '@/lib/env';
+import { resolveAppUrl } from '@/lib/app-url';
 import { roleHome } from '@/lib/auth/session';
 import { actionError, zodFieldErrors } from '@/lib/action-result';
 import type { FormState } from '@/lib/form-state';
@@ -89,6 +89,7 @@ export async function signUpAction(_prev: FormState, formData: FormData): Promis
 
   try {
     const supabase = await createServerSupabaseClient();
+    const appUrl = await resolveAppUrl();
     const { data: settings } = await supabase.from('platform_settings').select('allow_signups').eq('id', true).maybeSingle();
 
     if (settings && !settings.allow_signups) {
@@ -100,7 +101,7 @@ export async function signUpAction(_prev: FormState, formData: FormData): Promis
       password: parsed.data.password,
       options: {
         data: { full_name: parsed.data.fullName },
-        emailRedirectTo: `${publicEnv.NEXT_PUBLIC_APP_URL}/auth/callback?next=/dashboard`,
+        emailRedirectTo: `${appUrl}/auth/callback`,
       },
     });
 
@@ -165,11 +166,30 @@ export async function signUpAction(_prev: FormState, formData: FormData): Promis
       redirect(instructorRequested ? '/student/become-instructor?requested=1' : '/student');
     }
 
+    // Opt-in convenience for demos and internal deployments: confirm the
+    // account server-side and sign the person straight in. Email ownership is
+    // not verified in this mode, so it stays off by default.
+    if (process.env.AUTO_CONFIRM_SIGNUPS === 'true' && data.user) {
+      const admin = createAdminClient();
+      const { error: confirmError } = await admin.auth.admin.updateUserById(data.user.id, {
+        email_confirm: true,
+      });
+      if (confirmError) throw confirmError;
+
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email: parsed.data.email,
+        password: parsed.data.password,
+      });
+      if (signInError) throw signInError;
+
+      redirect(instructorRequested ? '/student/become-instructor?requested=1' : '/student');
+    }
+
     return {
       status: 'success',
       message: instructorRequested
-        ? 'Account created. Your instructor request is pending review. Check your email to verify your address, then sign in.'
-        : 'Account created. Check your email to verify your address, then sign in.',
+        ? `Account created. We sent a confirmation link from Lumina LMS to ${parsed.data.email}. Your instructor request is pending review — confirm your email, then sign in.`
+        : `Account created. We sent a confirmation link from Lumina LMS to ${parsed.data.email}. Confirm your email, then sign in.`,
     };
   } catch (error) {
     if (error instanceof Error && 'digest' in error) throw error;
@@ -186,8 +206,9 @@ export async function forgotPasswordAction(_prev: FormState, formData: FormData)
 
   try {
     const supabase = await createServerSupabaseClient();
+    const appUrl = await resolveAppUrl();
     const { error } = await supabase.auth.resetPasswordForEmail(parsed.data.email, {
-      redirectTo: `${publicEnv.NEXT_PUBLIC_APP_URL}/auth/callback?next=/reset-password`,
+      redirectTo: `${appUrl}/auth/callback?next=/reset-password`,
     });
     if (error) throw error;
     return {
@@ -237,10 +258,11 @@ export async function resendVerificationAction(_prev: FormState, formData: FormD
 
   try {
     const supabase = await createServerSupabaseClient();
+    const appUrl = await resolveAppUrl();
     const { error } = await supabase.auth.resend({
       type: 'signup',
       email,
-      options: { emailRedirectTo: `${publicEnv.NEXT_PUBLIC_APP_URL}/auth/callback?next=/dashboard` },
+      options: { emailRedirectTo: `${appUrl}/auth/callback` },
     });
     if (error) throw error;
     return { status: 'success', message: 'Verification email sent. Check your inbox.' };
