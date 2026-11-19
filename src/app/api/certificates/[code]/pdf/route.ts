@@ -44,7 +44,7 @@ export async function GET(_request: Request, { params }: { params: Promise<{ cod
   page.drawRectangle({ x: 28, y: 28, width: width - 56, height: height - 56, borderColor: gold, borderWidth: 1.5 });
   page.drawRectangle({ x: 36, y: 36, width: width - 72, height: height - 72, borderColor: rgb(0.85, 0.86, 0.9), borderWidth: 0.5 });
   page.drawCircle({ x: width / 2, y: height - 92, size: 22, color: rgb(0.98, 0.95, 0.86) });
-  page.drawText('LUMINA', { x: width / 2 - bold.widthOfTextAtSize('LUMINA', 12) / 2, y: height - 96, size: 12, font: bold, color: gold });
+  page.drawText('LEARNOVA', { x: width / 2 - bold.widthOfTextAtSize('LEARNOVA', 12) / 2, y: height - 96, size: 12, font: bold, color: gold });
 
   const title = 'CERTIFICATE OF COMPLETION';
   page.drawText(title, {
@@ -132,7 +132,7 @@ export async function GET(_request: Request, { params }: { params: Promise<{ cod
   return new Response(new Uint8Array(bytes), {
     headers: {
       'Content-Type': 'application/pdf',
-      'Content-Disposition': `attachment; filename="lumina-${certificate.code.replace(/[^A-Za-z0-9_-]/g, '')}.pdf"`,
+      'Content-Disposition': `attachment; filename="learnova-${certificate.code.replace(/[^A-Za-z0-9_-]/g, '')}.pdf"`,
       'Cache-Control': 'private, max-age=60',
     },
   });

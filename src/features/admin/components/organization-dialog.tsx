@@ -76,7 +76,7 @@ export function OrganizationDialog({ organization }: { organization?: Organizati
                 id={`org-name-${organization?.id ?? 'new'}`}
                 name="name"
                 defaultValue={organization?.name ?? ''}
-                placeholder="Lumina Academy"
+                placeholder="Learnova Academy"
                 required
               />
               {state.fieldErrors?.name ? <p className="text-xs text-destructive">{state.fieldErrors.name[0]}</p> : null}
@@ -87,7 +87,7 @@ export function OrganizationDialog({ organization }: { organization?: Organizati
                 id={`org-slug-${organization?.id ?? 'new'}`}
                 name="slug"
                 defaultValue={organization?.slug ?? ''}
-                placeholder="lumina-academy"
+                placeholder="learnova-academy"
                 pattern="[a-z0-9]+(?:-[a-z0-9]+)*"
                 required
                 disabled={editing}

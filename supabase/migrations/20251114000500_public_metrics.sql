@@ -1,5 +1,5 @@
 -- =============================================================================
--- Lumina LMS — safe aggregate read functions for public/marketing surfaces.
+-- Learnova LMS — safe aggregate read functions for public/marketing surfaces.
 -- Aggregates must not leak unpublished or cross-tenant rows.
 -- =============================================================================
 

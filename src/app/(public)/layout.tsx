@@ -9,7 +9,7 @@ export default async function PublicLayout({ children }: { children: React.React
       supabase.from('platform_settings').select('*').eq('id', true).maybeSingle().then((result) => result.data),
     ),
   ]);
-  const platformName = settings?.platform_name ?? 'Lumina LMS';
+  const platformName = settings?.platform_name ?? 'Learnova LMS';
 
   return (
     <div className="flex min-h-dvh flex-col">

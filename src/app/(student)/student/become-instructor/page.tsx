@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { formatDateTime } from '@/lib/utils';
 
-export const metadata = { title: 'Teach on Lumina' };
+export const metadata = { title: 'Teach on Learnova' };
 
 export default async function BecomeInstructorPage({
   searchParams,
@@ -32,7 +32,7 @@ export default async function BecomeInstructorPage({
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Teach on Lumina"
+        title="Teach on Learnova"
         description={`Share your expertise with learners at ${user.activeOrg?.name ?? 'your organization'}.`}
         actions={
           <Button asChild variant="outline">

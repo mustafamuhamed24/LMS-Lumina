@@ -1,5 +1,5 @@
 -- =============================================================================
--- Lumina LMS — Row Level Security
+-- Learnova LMS — Row Level Security
 -- Every table is protected. Tenant isolation is enforced by predicates that are
 -- security-definer functions (no recursive policy evaluation).
 -- =============================================================================

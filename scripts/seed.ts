@@ -1,5 +1,5 @@
 /**
- * Lumina LMS — demo data seed.
+ * Learnova LMS — demo data seed.
  *
  * Run with `npm run db:seed` after `npm run db:reset`. The script is idempotent:
  * demo auth users are reused, and demo courses are rebuilt from scratch on every
@@ -29,7 +29,7 @@ const admin = createClient<Database>(SUPABASE_URL, SERVICE_ROLE_KEY, {
   auth: { autoRefreshToken: false, persistSession: false, detectSessionInUrl: false },
 });
 
-const ORG_LUMINA = '11111111-1111-4111-8111-111111111111';
+const ORG_LEARNOVA = '11111111-1111-4111-8111-111111111111';
 const ORG_NORTHSTAR = '22222222-2222-4222-8222-222222222222';
 
 function assertOk(error: { message: string } | null, context: string) {
@@ -65,23 +65,23 @@ type SeedUser = {
 const users: SeedUser[] = [
   {
     key: 'super',
-    email: 'super@lumina.test',
+    email: 'super@learnova.test',
     fullName: 'Sage Whitfield',
     role: 'super_admin',
-    orgId: ORG_LUMINA,
+    orgId: ORG_LEARNOVA,
     memberRole: 'org_admin',
-    headline: 'Platform steward at Lumina',
-    bio: 'Keeps Lumina secure, observable and pleasant for every organization.',
+    headline: 'Platform steward at Learnova',
+    bio: 'Keeps Learnova secure, observable and pleasant for every organization.',
     extraOrg: { orgId: ORG_NORTHSTAR, memberRole: 'org_admin' },
   },
   {
     key: 'admin',
-    email: 'admin@lumina.test',
+    email: 'admin@learnova.test',
     fullName: 'Priya Raman',
     role: 'org_admin',
-    orgId: ORG_LUMINA,
+    orgId: ORG_LEARNOVA,
     memberRole: 'org_admin',
-    headline: 'Head of Learning, Lumina Academy',
+    headline: 'Head of Learning, Learnova Academy',
     bio: 'Partners with instructors to turn expertise into durable learning experiences.',
   },
   {
@@ -96,20 +96,20 @@ const users: SeedUser[] = [
   },
   {
     key: 'maya',
-    email: 'maya@lumina.test',
+    email: 'maya@learnova.test',
     fullName: 'Maya Chen',
     role: 'instructor',
-    orgId: ORG_LUMINA,
+    orgId: ORG_LEARNOVA,
     memberRole: 'instructor',
     headline: 'Design systems lead & instructor',
     bio: 'Builds calm, accessible interfaces and teaches teams how to do the same.',
   },
   {
     key: 'leo',
-    email: 'leo@lumina.test',
+    email: 'leo@learnova.test',
     fullName: 'Leo Martins',
     role: 'instructor',
-    orgId: ORG_LUMINA,
+    orgId: ORG_LEARNOVA,
     memberRole: 'instructor',
     headline: 'Staff engineer & educator',
     bio: 'Loves React internals, TypeScript edge cases and pragmatic architecture.',
@@ -126,30 +126,30 @@ const users: SeedUser[] = [
   },
   {
     key: 'student',
-    email: 'student@lumina.test',
+    email: 'student@learnova.test',
     fullName: 'Amara Okafor',
     role: 'student',
-    orgId: ORG_LUMINA,
+    orgId: ORG_LEARNOVA,
     memberRole: 'student',
     headline: 'Product designer',
     bio: 'Learning design systems and React architecture to level up my craft.',
   },
   {
     key: 'diego',
-    email: 'diego@lumina.test',
+    email: 'diego@learnova.test',
     fullName: 'Diego Alvarez',
     role: 'student',
-    orgId: ORG_LUMINA,
+    orgId: ORG_LEARNOVA,
     memberRole: 'student',
     headline: 'Frontend engineer',
     bio: 'Building a stronger foundation in component architecture.',
   },
   {
     key: 'sofia',
-    email: 'sofia@lumina.test',
+    email: 'sofia@learnova.test',
     fullName: 'Sofia Rossi',
     role: 'student',
-    orgId: ORG_LUMINA,
+    orgId: ORG_LEARNOVA,
     memberRole: 'student',
     headline: 'Engineering manager',
     bio: 'Exploring how healthy teams ship better software.',
@@ -231,7 +231,7 @@ type CourseSeed = {
 const courses: CourseSeed[] = [
   {
     slug: 'design-systems-foundations',
-    orgId: ORG_LUMINA,
+    orgId: ORG_LEARNOVA,
     instructorKey: 'maya',
     categorySlug: 'design',
     title: 'Design Systems Foundations',
@@ -457,7 +457,7 @@ Governance should be lightweight: a weekly review, a clear owner per component a
   },
   {
     slug: 'modern-react-architecture',
-    orgId: ORG_LUMINA,
+    orgId: ORG_LEARNOVA,
     instructorKey: 'leo',
     categorySlug: 'engineering',
     title: 'Modern React Architecture',
@@ -671,7 +671,7 @@ Make failures legible: assert on user-visible outcomes and error messages.`,
   },
   {
     slug: 'leading-high-performing-teams',
-    orgId: ORG_LUMINA,
+    orgId: ORG_LEARNOVA,
     instructorKey: 'maya',
     categorySlug: 'leadership',
     title: 'Leading High-Performing Teams',
@@ -827,7 +827,7 @@ Review goals weekly, but change them rarely. Constant reprioritization teaches t
   },
   {
     slug: 'data-storytelling-essentials',
-    orgId: ORG_LUMINA,
+    orgId: ORG_LEARNOVA,
     instructorKey: 'leo',
     categorySlug: 'data',
     title: 'Data Storytelling Essentials',
@@ -1103,7 +1103,7 @@ Mitigations do not need to be expensive. Pre-register the analysis, collect a co
 
 // ── Main ─────────────────────────────────────────────────────────────────────
 async function main() {
-  console.log('Seeding Lumina LMS demo data…\n');
+  console.log('Seeding Learnova LMS demo data…\n');
 
   // Platform settings
   {
@@ -1112,9 +1112,9 @@ async function main() {
       .upsert(
         {
           id: true,
-          platform_name: 'Lumina LMS',
+          platform_name: 'Learnova LMS',
           tagline: 'Knowledge, structured.',
-          support_email: 'support@lumina.test',
+          support_email: 'support@learnova.test',
           allow_signups: true,
           require_enrollment_approval: false,
           primary_color: '#4f46e5',
@@ -1129,13 +1129,13 @@ async function main() {
     const { error } = await admin.from('organizations').upsert(
       [
         {
-          id: ORG_LUMINA,
-          name: 'Lumina Academy',
-          slug: 'lumina-academy',
+          id: ORG_LEARNOVA,
+          name: 'Learnova Academy',
+          slug: 'learnova-academy',
           description:
             'A modern learning organization focused on design, engineering and leadership.',
           primary_color: '#4f46e5',
-          website_url: 'https://lumina.test',
+          website_url: 'https://learnova.test',
           is_active: true,
         },
         {
@@ -1239,21 +1239,21 @@ async function main() {
     if (sofiaId) {
       const { error } = await admin.from('instructor_requests').insert({
         user_id: sofiaId,
-        org_id: ORG_LUMINA,
+        org_id: ORG_LEARNOVA,
         status: 'pending',
         message: 'I would like to teach design systems, accessibility and research-led product design.',
       });
       assertOk(error, 'instructor request');
-      console.log('  + instructor request for sofia@lumina.test');
+      console.log('  + instructor request for sofia@learnova.test');
     }
   }
 
   // Categories
   const categories = [
-    { org_id: ORG_LUMINA, slug: 'design', name: 'Design', color: '#8b5cf6', description: 'Product, interface and systems design.' },
-    { org_id: ORG_LUMINA, slug: 'engineering', name: 'Engineering', color: '#0ea5e9', description: 'Modern software craft and architecture.' },
-    { org_id: ORG_LUMINA, slug: 'leadership', name: 'Leadership', color: '#f59e0b', description: 'People, teams and organizational health.' },
-    { org_id: ORG_LUMINA, slug: 'data', name: 'Data & Analytics', color: '#10b981', description: 'Evidence, measurement and communication.' },
+    { org_id: ORG_LEARNOVA, slug: 'design', name: 'Design', color: '#8b5cf6', description: 'Product, interface and systems design.' },
+    { org_id: ORG_LEARNOVA, slug: 'engineering', name: 'Engineering', color: '#0ea5e9', description: 'Modern software craft and architecture.' },
+    { org_id: ORG_LEARNOVA, slug: 'leadership', name: 'Leadership', color: '#f59e0b', description: 'People, teams and organizational health.' },
+    { org_id: ORG_LEARNOVA, slug: 'data', name: 'Data & Analytics', color: '#10b981', description: 'Evidence, measurement and communication.' },
     { org_id: ORG_NORTHSTAR, slug: 'applied-science', name: 'Applied Science', color: '#0f766e', description: 'Research methods and applied evidence.' },
     { org_id: ORG_NORTHSTAR, slug: 'communication', name: 'Communication', color: '#e11d48', description: 'Explaining complex work to real audiences.' },
   ];
@@ -1266,7 +1266,7 @@ async function main() {
   const { data: categoryRows, error: categoryError } = await admin
     .from('categories')
     .select('id,org_id,slug')
-    .in('org_id', [ORG_LUMINA, ORG_NORTHSTAR]);
+    .in('org_id', [ORG_LEARNOVA, ORG_NORTHSTAR]);
   assertOk(categoryError, 'load categories');
   const categoryByKey = new Map(
     (categoryRows ?? []).map((category) => [`${category.org_id}:${category.slug}`, category.id]),
@@ -1603,7 +1603,7 @@ async function main() {
     if (plan.certificateCode && plan.status === 'completed') {
       const student = users.find((user) => user.key === plan.studentKey);
       const instructor = users.find((user) => user.key === seedCourse.instructorKey);
-      const orgName = seedCourse.orgId === ORG_LUMINA ? 'Lumina Academy' : 'Northstar Institute';
+      const orgName = seedCourse.orgId === ORG_LEARNOVA ? 'Learnova Academy' : 'Northstar Institute';
       const { error: certificateError } = await admin.from('certificates').insert({
         org_id: seedCourse.orgId,
         enrollment_id: enrollmentRow.id,
@@ -1822,7 +1822,7 @@ async function main() {
   const notificationPlans: NotificationPlan[] = [
     {
       userKey: 'student',
-      orgId: ORG_LUMINA,
+      orgId: ORG_LEARNOVA,
       type: 'completion',
       title: 'Course completed',
       body: 'Congratulations! You completed "Design Systems Foundations" and earned a certificate.',
@@ -1832,7 +1832,7 @@ async function main() {
     },
     {
       userKey: 'student',
-      orgId: ORG_LUMINA,
+      orgId: ORG_LEARNOVA,
       type: 'grade',
       title: 'Capstone graded: 94/100',
       body: 'Maya Chen left feedback on your design-system audit.',
@@ -1842,7 +1842,7 @@ async function main() {
     },
     {
       userKey: 'student',
-      orgId: ORG_LUMINA,
+      orgId: ORG_LEARNOVA,
       type: 'deadline',
       title: 'Assignment due soon',
       body: '"Refactor a legacy component" is due in two days.',
@@ -1852,7 +1852,7 @@ async function main() {
     },
     {
       userKey: 'student',
-      orgId: ORG_LUMINA,
+      orgId: ORG_LEARNOVA,
       type: 'feedback',
       title: 'Submission returned for revision',
       body: 'Leo Martins returned your React refactor with feedback. You can resubmit until graded.',
@@ -1862,7 +1862,7 @@ async function main() {
     },
     {
       userKey: 'diego',
-      orgId: ORG_LUMINA,
+      orgId: ORG_LEARNOVA,
       type: 'grade',
       title: 'Design-system audit graded',
       body: 'You scored 88/100. Review Maya\'s feedback and keep going.',
@@ -1872,7 +1872,7 @@ async function main() {
     },
     {
       userKey: 'diego',
-      orgId: ORG_LUMINA,
+      orgId: ORG_LEARNOVA,
       type: 'quiz',
       title: 'Quiz attempt recorded',
       body: 'You scored 60% on the design systems checkpoint. You have two attempts left.',
@@ -1882,7 +1882,7 @@ async function main() {
     },
     {
       userKey: 'sofia',
-      orgId: ORG_LUMINA,
+      orgId: ORG_LEARNOVA,
       type: 'enrollment',
       title: 'Enrollment approved',
       body: 'Your request to join "Leading High-Performing Teams" was approved.',
@@ -1892,7 +1892,7 @@ async function main() {
     },
     {
       userKey: 'sofia',
-      orgId: ORG_LUMINA,
+      orgId: ORG_LEARNOVA,
       type: 'deadline',
       title: 'Team health plan due soon',
       body: 'Submit your 30-day experiment plan before the deadline.',
@@ -1922,7 +1922,7 @@ async function main() {
     },
     {
       userKey: 'maya',
-      orgId: ORG_LUMINA,
+      orgId: ORG_LEARNOVA,
       type: 'assignment',
       title: 'New submission to review',
       body: 'Sofia Rossi submitted "Capstone: audit a design system".',
@@ -1932,7 +1932,7 @@ async function main() {
     },
     {
       userKey: 'leo',
-      orgId: ORG_LUMINA,
+      orgId: ORG_LEARNOVA,
       type: 'enrollment',
       title: 'New student enrolled',
       body: 'Diego Alvarez joined "Modern React Architecture".',
@@ -1942,7 +1942,7 @@ async function main() {
     },
     {
       userKey: 'admin',
-      orgId: ORG_LUMINA,
+      orgId: ORG_LEARNOVA,
       type: 'system',
       title: 'Weekly learning summary',
       body: '3 courses are published, 7 learners are active, and 1 certificate was issued this week.',
@@ -1990,7 +1990,7 @@ async function main() {
   const researchCourse = courseBySlug.get('applied-research-methods');
   const activityRows = [
     {
-      org_id: ORG_LUMINA,
+      org_id: ORG_LEARNOVA,
       user_id: userIds.get('student')!,
       action: 'course.completed',
       entity_type: 'course',
@@ -1999,7 +1999,7 @@ async function main() {
       created_at: daysAgo(5),
     },
     {
-      org_id: ORG_LUMINA,
+      org_id: ORG_LEARNOVA,
       user_id: userIds.get('student')!,
       action: 'lesson.completed',
       entity_type: 'lesson',
@@ -2008,7 +2008,7 @@ async function main() {
       created_at: daysAgo(6),
     },
     {
-      org_id: ORG_LUMINA,
+      org_id: ORG_LEARNOVA,
       user_id: userIds.get('diego')!,
       action: 'enrollment.created',
       entity_type: 'enrollment',
@@ -2017,7 +2017,7 @@ async function main() {
       created_at: daysAgo(20),
     },
     {
-      org_id: ORG_LUMINA,
+      org_id: ORG_LEARNOVA,
       user_id: userIds.get('maya')!,
       action: 'submission.graded',
       entity_type: 'assignment_submission',
@@ -2026,7 +2026,7 @@ async function main() {
       created_at: daysAgo(4),
     },
     {
-      org_id: ORG_LUMINA,
+      org_id: ORG_LEARNOVA,
       user_id: userIds.get('leo')!,
       action: 'course.updated',
       entity_type: 'course',
@@ -2077,15 +2077,15 @@ async function main() {
   console.log(`  Lessons: ${lessonCount ?? 0}`);
   console.log(`  Enrollments: ${enrollmentCount ?? 0}`);
   console.log(`  Demo password: ${SEED_PASSWORD}`);
-  console.log(`  super@lumina.test       → super admin`);
-  console.log(`  admin@lumina.test       → org admin (Lumina Academy)`);
+  console.log(`  super@learnova.test       → super admin`);
+  console.log(`  admin@learnova.test       → org admin (Learnova Academy)`);
   console.log(`  admin@northstar.test    → org admin (Northstar Institute)`);
-  console.log(`  maya@lumina.test        → instructor`);
-  console.log(`  leo@lumina.test         → instructor`);
+  console.log(`  maya@learnova.test        → instructor`);
+  console.log(`  leo@learnova.test         → instructor`);
   console.log(`  nina@northstar.test     → instructor`);
-  console.log(`  student@lumina.test     → student (completed course + certificate)`);
-  console.log(`  diego@lumina.test       → student`);
-  console.log(`  sofia@lumina.test       → student`);
+  console.log(`  student@learnova.test     → student (completed course + certificate)`);
+  console.log(`  diego@learnova.test       → student`);
+  console.log(`  sofia@learnova.test       → student`);
   console.log(`  student@northstar.test  → student (second tenant)`);
 }
 

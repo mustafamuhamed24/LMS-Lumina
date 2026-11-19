@@ -1,4 +1,4 @@
-# Lumina LMS — Database Schema
+# Learnova LMS — Database Schema
 
 > Supabase Postgres. All application tables live in `public` and are protected by
 > row-level security. Migrations are in [`supabase/migrations`](supabase/migrations)
@@ -104,7 +104,7 @@ policy evaluation and keeps tenant checks consistent.
 | Trigger / function | Effect |
 | --- | --- |
 | `handle_new_user` | Creates a `profiles` row and a default student membership on signup. |
-| `handle_user_confirmed` | Marks `profiles.email_verified` after auth confirmation using the `lumina.system_update` flag. |
+| `handle_user_confirmed` | Marks `profiles.email_verified` after auth confirmation using the `learnova.system_update` flag. |
 | `protect_profile_privileges` | Blocks user-scoped changes to `role`, `status`, `email`, `default_org_id`, `email_verified`. |
 | `protect_submission_grades` | Blocks students from editing grades/feedback/status after grading. |
 | `validate_*_tenant` | Ensures course/section/lesson/quiz/assignment/enrollment/progress/attempt/answer rows share one organization. |
@@ -180,5 +180,5 @@ unique index after storage starts. Hosted Supabase already has it.
 `scripts/seed.ts` creates ten demo auth users (password `Passw0rd!`) across two
 tenants, six courses, 38 lessons, quizzes, assignments, enrollments, progress,
 attempts, submissions, notifications, activity logs, a pending instructor
-request for `sofia@lumina.test`, and certificate `LUM-A1B2C3D4E5F6`. See the seed
+request for `sofia@learnova.test`, and certificate `LUM-A1B2C3D4E5F6`. See the seed
 output for the full account list.

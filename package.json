@@ -1,8 +1,9 @@
 {
-  "name": "lumina-lms",
+  "name": "learnova-lms",
   "version": "1.0.0",
   "private": true,
-  "description": "Lumina LMS — a production-grade, multi-tenant learning management system",
+  "author": "Mustafa Muhamed",
+  "description": "Learnova LMS - a production-grade, multi-tenant learning management system",
   "scripts": {
     "dev": "next dev",
     "build": "next build",

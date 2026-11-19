@@ -1,5 +1,5 @@
 -- =============================================================================
--- Lumina LMS — denormalized course counters for efficient catalog sorting.
+-- Learnova LMS — denormalized course counters for efficient catalog sorting.
 -- Maintained by triggers so list queries never scan lessons/enrollments.
 -- =============================================================================
 

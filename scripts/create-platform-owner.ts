@@ -1,12 +1,12 @@
 /**
- * Lumina LMS — platform owner bootstrap.
+ * Learnova LMS — platform owner bootstrap.
  *
  * Creates (or promotes) the first `super_admin` account. Super admins are the
  * only people who can open `/admin/platform`, manage every tenant and grant
  * platform-level roles. Public signup can never produce one, by design.
  *
  * Usage:
- *   npm run admin:create -- owner@example.com "Platform Owner" "S3curePass!" lumina-academy
+ *   npm run admin:create -- owner@example.com "Platform Owner" "S3curePass!" learnova-academy
  *
  * The password and organization slug are optional: a strong password is
  * generated when omitted and the first active organization is used if no slug
@@ -44,7 +44,7 @@ Usage:
   npm run admin:create -- <email> ["Full name"] ["Password"] [org-slug]
 
 Examples:
-  npm run admin:create -- owner@example.com "Platform Owner" "S3curePass!" lumina-academy
+  npm run admin:create -- owner@example.com "Platform Owner" "S3curePass!" learnova-academy
   npm run admin:create -- owner@example.com
 
 Notes:

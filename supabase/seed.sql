@@ -5,7 +5,7 @@
 -- =============================================================================
 
 insert into public.platform_settings (id, platform_name, tagline, support_email, primary_color)
-values (true, 'Lumina LMS', 'Knowledge, structured.', 'support@lumina.test', '#4f46e5')
+values (true, 'Learnova LMS', 'Knowledge, structured.', 'support@learnova.test', '#4f46e5')
 on conflict (id) do update
   set platform_name = excluded.platform_name,
       tagline = excluded.tagline,
@@ -15,11 +15,11 @@ insert into public.organizations (id, name, slug, description, primary_color, we
 values
   (
     '11111111-1111-4111-8111-111111111111',
-    'Lumina Academy',
-    'lumina-academy',
+    'Learnova Academy',
+    'learnova-academy',
     'A modern learning organization focused on design, engineering and leadership.',
     '#4f46e5',
-    'https://lumina.test'
+    'https://learnova.test'
   ),
   (
     '22222222-2222-4222-8222-222222222222',

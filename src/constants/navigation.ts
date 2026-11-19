@@ -15,10 +15,11 @@ import {
   Layers,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
+import type { MessageKey } from '@/lib/i18n/messages';
 import type { Role } from '@/types/app';
 
 export type NavItem = {
-  label: string;
+  labelKey: MessageKey;
   href: string;
   icon: LucideIcon;
   exact?: boolean;
@@ -26,70 +27,70 @@ export type NavItem = {
 };
 
 export type NavGroup = {
-  label: string;
+  labelKey: MessageKey;
   items: NavItem[];
 };
 
 const adminNav: NavGroup[] = [
   {
-    label: 'Overview',
+    labelKey: 'nav.group.overview',
     items: [
-      { label: 'Dashboard', href: '/admin', icon: LayoutDashboard, exact: true },
-      { label: 'Platform', href: '/admin/platform', icon: ShieldCheck, superAdminOnly: true },
+      { labelKey: 'nav.dashboard', href: '/admin', icon: LayoutDashboard, exact: true },
+      { labelKey: 'nav.platform', href: '/admin/platform', icon: ShieldCheck, superAdminOnly: true },
     ],
   },
   {
-    label: 'Manage',
+    labelKey: 'nav.group.manage',
     items: [
-      { label: 'Users', href: '/admin/users', icon: Users },
-      { label: 'Organizations', href: '/admin/organizations', icon: Building2, superAdminOnly: true },
-      { label: 'Courses', href: '/admin/courses', icon: BookOpen },
-      { label: 'Categories', href: '/admin/categories', icon: FolderTree },
-      { label: 'Enrollments', href: '/admin/enrollments', icon: ClipboardCheck },
+      { labelKey: 'nav.users', href: '/admin/users', icon: Users },
+      { labelKey: 'nav.organizations', href: '/admin/organizations', icon: Building2, superAdminOnly: true },
+      { labelKey: 'nav.courses', href: '/admin/courses', icon: BookOpen },
+      { labelKey: 'nav.categories', href: '/admin/categories', icon: FolderTree },
+      { labelKey: 'nav.enrollments', href: '/admin/enrollments', icon: ClipboardCheck },
     ],
   },
   {
-    label: 'Insights',
+    labelKey: 'nav.group.insights',
     items: [
-      { label: 'Analytics', href: '/admin/analytics', icon: BarChart3 },
-      { label: 'Settings', href: '/admin/settings', icon: Settings },
+      { labelKey: 'nav.analytics', href: '/admin/analytics', icon: BarChart3 },
+      { labelKey: 'nav.settings', href: '/admin/settings', icon: Settings },
     ],
   },
 ];
 
 const instructorNav: NavGroup[] = [
   {
-    label: 'Workspace',
+    labelKey: 'nav.group.workspace',
     items: [
-      { label: 'Dashboard', href: '/instructor', icon: LayoutDashboard, exact: true },
-      { label: 'My courses', href: '/instructor/courses', icon: BookOpen },
-      { label: 'Students', href: '/instructor/students', icon: Users },
-      { label: 'Assignments', href: '/instructor/assignments', icon: ClipboardCheck },
+      { labelKey: 'nav.dashboard', href: '/instructor', icon: LayoutDashboard, exact: true },
+      { labelKey: 'nav.myCourses', href: '/instructor/courses', icon: BookOpen },
+      { labelKey: 'nav.students', href: '/instructor/students', icon: Users },
+      { labelKey: 'nav.assignments', href: '/instructor/assignments', icon: ClipboardCheck },
     ],
   },
   {
-    label: 'Insights',
-    items: [{ label: 'Analytics', href: '/instructor/analytics', icon: BarChart3 }],
+    labelKey: 'nav.group.insights',
+    items: [{ labelKey: 'nav.analytics', href: '/instructor/analytics', icon: BarChart3 }],
   },
 ];
 
 const studentNav: NavGroup[] = [
   {
-    label: 'Learning',
+    labelKey: 'nav.group.learning',
     items: [
-      { label: 'Dashboard', href: '/student', icon: LayoutDashboard, exact: true },
-      { label: 'My courses', href: '/student/my-courses', icon: BookOpen },
-      { label: 'Assignments', href: '/student/assignments', icon: ClipboardCheck },
-      { label: 'Certificates', href: '/student/certificates', icon: Award },
+      { labelKey: 'nav.dashboard', href: '/student', icon: LayoutDashboard, exact: true },
+      { labelKey: 'nav.myCourses', href: '/student/my-courses', icon: BookOpen },
+      { labelKey: 'nav.assignments', href: '/student/assignments', icon: ClipboardCheck },
+      { labelKey: 'nav.certificates', href: '/student/certificates', icon: Award },
     ],
   },
   {
-    label: 'Account',
+    labelKey: 'nav.group.account',
     items: [
-      { label: 'Notifications', href: '/student/notifications', icon: Bell },
-      { label: 'Profile', href: '/student/profile', icon: UserRound },
-      { label: 'Teach on Learnova', href: '/student/become-instructor', icon: BookOpen },
-      { label: 'Browse catalog', href: '/courses', icon: GraduationCap },
+      { labelKey: 'nav.notifications', href: '/student/notifications', icon: Bell },
+      { labelKey: 'nav.profile', href: '/student/profile', icon: UserRound },
+      { labelKey: 'nav.teach', href: '/student/become-instructor', icon: BookOpen },
+      { labelKey: 'nav.catalog', href: '/courses', icon: GraduationCap },
     ],
   },
 ];
@@ -109,11 +110,11 @@ export function getNavigation(role: Role): NavGroup[] {
   }
 }
 
-export const roleLabel: Record<Role, string> = {
-  super_admin: 'Platform administrator',
-  org_admin: 'Organization administrator',
-  instructor: 'Instructor',
-  student: 'Student',
+export const roleLabelKey: Record<Role, MessageKey> = {
+  super_admin: 'role.super_admin',
+  org_admin: 'role.org_admin',
+  instructor: 'role.instructor',
+  student: 'role.student',
 };
 
 export const fallbackIcon = Layers;

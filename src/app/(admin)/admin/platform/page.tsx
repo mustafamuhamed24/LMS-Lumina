@@ -136,7 +136,7 @@ export default async function PlatformPage() {
               <EmptyState
                 icon={BarChart3}
                 title="No platform activity yet"
-                description="New accounts and enrollments will appear here as organizations start using Lumina."
+                description="New accounts and enrollments will appear here as organizations start using Learnova."
                 className="border-0 bg-transparent py-10"
               />
             )}

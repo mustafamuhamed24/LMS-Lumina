@@ -213,7 +213,7 @@ export async function requestInstructorAccessAction(_prev: FormState, formData: 
           user_id: adminUser.id,
           type: 'system' as const,
           title: 'New instructor request',
-          body: `${user.profile.full_name} asked to teach on Lumina.`,
+          body: `${user.profile.full_name} asked to teach on Learnova.`,
           link: '/admin/users',
         })),
       );

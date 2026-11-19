@@ -38,7 +38,7 @@ export function PlatformSettingsForm({ settings }: { settings: PlatformSettingsR
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-2">
               <Label htmlFor="platform-name">Platform name</Label>
-              <Input id="platform-name" name="platformName" defaultValue={settings?.platform_name ?? 'Lumina LMS'} required />
+              <Input id="platform-name" name="platformName" defaultValue={settings?.platform_name ?? 'Learnova LMS'} required />
               {state.fieldErrors?.platformName ? (
                 <p className="text-xs text-destructive">{state.fieldErrors.platformName[0]}</p>
               ) : null}
@@ -53,7 +53,7 @@ export function PlatformSettingsForm({ settings }: { settings: PlatformSettingsR
                 id="platform-email"
                 name="supportEmail"
                 type="email"
-                defaultValue={settings?.support_email ?? 'support@lumina.test'}
+                defaultValue={settings?.support_email ?? 'support@learnova.test'}
                 required
               />
             </div>

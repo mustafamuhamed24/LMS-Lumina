@@ -139,16 +139,16 @@ describe('admin schemas', () => {
   it('validates organization colours', () => {
     expect(
       organizationSchema.safeParse({
-        name: 'Lumina',
-        slug: 'lumina',
+        name: 'Learnova',
+        slug: 'learnova',
         primaryColor: '#4f46e5',
         isActive: 'on',
       }).success,
     ).toBe(true);
     expect(
       organizationSchema.safeParse({
-        name: 'Lumina',
-        slug: 'Lumina School',
+        name: 'Learnova',
+        slug: 'Learnova School',
         primaryColor: 'blue',
         isActive: 'on',
       }).success,

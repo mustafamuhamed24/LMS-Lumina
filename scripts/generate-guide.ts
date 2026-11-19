@@ -1,8 +1,8 @@
 /**
- * Generates the Lumina LMS platform guide PDF.
+ * Generates the Learnova LMS platform guide PDF.
  *
  * Usage: npm run docs:pdf
- * Output: docs/Lumina-LMS-Platform-Guide.pdf
+ * Output: docs/Learnova-LMS-Platform-Guide.pdf
  *
  * The layout engine below is intentionally self-contained: two passes measure
  * the content, record section pages, then draw a cover, a table of contents and
@@ -13,7 +13,7 @@ import { mkdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { PDFDocument, StandardFonts, rgb, type PDFFont, type PDFPage } from 'pdf-lib';
 
-const OUTPUT = path.join(process.cwd(), 'docs', 'Lumina-LMS-Platform-Guide.pdf');
+const OUTPUT = path.join(process.cwd(), 'docs', 'Learnova-LMS-Platform-Guide.pdf');
 const PAGE = { width: 595.28, height: 841.89 };
 const MARGIN = { top: 64, bottom: 64, left: 54, right: 54 };
 const CONTENT_WIDTH = PAGE.width - MARGIN.left - MARGIN.right;
@@ -467,15 +467,15 @@ class Layout {
 }
 
 const DEMO_ACCOUNTS: [string, string, string][] = [
-  ['super@lumina.test', 'Platform owner (super admin)', 'Sage Whitfield'],
-  ['admin@lumina.test', 'Organization admin, Lumina Academy', 'Priya Raman'],
+  ['super@learnova.test', 'Platform owner (super admin)', 'Sage Whitfield'],
+  ['admin@learnova.test', 'Organization admin, Learnova Academy', 'Priya Raman'],
   ['admin@northstar.test', 'Organization admin, Northstar Institute', 'Marcus Bell'],
-  ['maya@lumina.test', 'Instructor, Lumina Academy', 'Maya Chen'],
-  ['leo@lumina.test', 'Instructor, Lumina Academy', 'Leo Martins'],
+  ['maya@learnova.test', 'Instructor, Learnova Academy', 'Maya Chen'],
+  ['leo@learnova.test', 'Instructor, Learnova Academy', 'Leo Martins'],
   ['nina@northstar.test', 'Instructor, Northstar Institute', 'Nina Patel'],
-  ['student@lumina.test', 'Student with a completed course', 'Amara Okafor'],
-  ['diego@lumina.test', 'Student in progress', 'Diego Alvarez'],
-  ['sofia@lumina.test', 'Student with a pending instructor request', 'Sofia Rossi'],
+  ['student@learnova.test', 'Student with a completed course', 'Amara Okafor'],
+  ['diego@learnova.test', 'Student in progress', 'Diego Alvarez'],
+  ['sofia@learnova.test', 'Student with a pending instructor request', 'Sofia Rossi'],
   ['student@northstar.test', 'Student in the second tenant', 'Noah Kim'],
 ];
 
@@ -488,7 +488,7 @@ function content(): Block[] {
     },
     {
       kind: 'lead',
-      text: 'Lumina is a multi-tenant learning platform: one deployment serves many organizations while keeping every tenant, course, submission and certificate isolated.',
+      text: 'Learnova is a multi-tenant learning platform: one deployment serves many organizations while keeping every tenant, course, submission and certificate isolated.',
     },
     {
       kind: 'p',
@@ -567,7 +567,7 @@ function content(): Block[] {
         ['Supabase API', 'http://127.0.0.1:54321', 'Auth, REST and Storage gateway'],
         ['Database', 'postgresql://postgres:postgres@127.0.0.1:54322/postgres', 'Local Postgres'],
         ['Supabase Studio', 'http://127.0.0.1:54323', 'Tables, SQL, auth users'],
-        ['Mailpit', 'http://127.0.0.1:54324', 'Captured confirmation and reset emails'],
+        ['Mailpit', 'http://127.0.0.1:54324', 'Captured password-reset and invitation emails'],
       ],
       widths: [1.1, 2.5, 2.5],
     },
@@ -582,14 +582,14 @@ function content(): Block[] {
     { kind: 'h2', text: 'Local demo owner' },
     {
       kind: 'p',
-      text: 'After npm run db:seed, sign in with super@lumina.test and the demo password Passw0rd!. This account owns the local installation and can open /admin/platform immediately.',
+      text: 'After npm run db:seed, sign in with super@learnova.test and the demo password Passw0rd!. This account owns the local installation and can open /admin/platform immediately.',
     },
     {
       kind: 'table',
       headers: ['Field', 'Value'],
       rows: [
         ['Sign-in page', 'http://localhost:3000/login'],
-        ['Email', 'super@lumina.test'],
+        ['Email', 'super@learnova.test'],
         ['Password', 'Passw0rd! (or SEED_PASSWORD from .env.local)'],
         ['Landing page', '/admin'],
         ['Platform control', '/admin/platform'],
@@ -601,7 +601,7 @@ function content(): Block[] {
     {
       kind: 'code',
       lines: [
-        'npm run admin:create -- owner@example.com "Platform Owner" "S3curePass!" lumina-academy',
+        'npm run admin:create -- owner@example.com "Platform Owner" "S3curePass!" learnova-academy',
         '',
         '# Password and organization slug are optional:',
         'npm run admin:create -- owner@example.com',
@@ -756,7 +756,7 @@ function content(): Block[] {
     { kind: 'h2', text: 'Becoming an instructor' },
     {
       kind: 'p',
-      text: 'Anyone can register and choose Teach, or open Teach on Lumina from the student sidebar later. The account stays a student until an organization or platform admin approves the request. Approved instructors immediately get the instructor dashboard and a notification.',
+      text: 'Anyone can register and choose Teach, or open Teach on Learnova from the student sidebar later. The account stays a student until an organization or platform admin approves the request. Approved instructors immediately get the instructor dashboard and a notification.',
     },
 
     { kind: 'pagebreak' },
@@ -858,18 +858,18 @@ function content(): Block[] {
       kind: 'p',
       text: 'Run npm run db:reset and npm run db:seed before the live checks. The RLS script signs in as real demo accounts and proves anonymous blocking, tenant isolation, quiz secrecy, privilege-escalation protection, instructor-request isolation and storage rules. E2E uses http://127.0.0.1:3000; the Next dev origin allow-list includes 127.0.0.1 and localhost so client components hydrate in tests.',
     },
-    { kind: 'h2', text: 'Branded authentication email' },
+    { kind: 'h2', text: 'Signup and account email' },
     {
       kind: 'p',
-      text: 'Supabase Auth sends signup and password-reset messages; the hosting provider does not. Configure custom SMTP with a verified sending domain and paste the templates in supabase/templates into Authentication, Emails, Templates. The templates use token_hash links, which the app verifies at /auth/callback, so confirmation works even when the message is opened on another device.',
+      text: 'Learnova does not require email verification. Registration creates a confirmed account with the service role, signs the person in immediately and shows a welcome popup, so no confirmation email is sent and Supabase signup email limits never block a new account.',
     },
     {
       kind: 'bullets',
       items: [
+        'Older unconfirmed accounts are recovered automatically: if sign-in reports email not confirmed, the server confirms the account once and retries.',
         'Set NEXT_PUBLIC_APP_URL to the deployed domain and mirror it in the Auth Site URL and redirect allow-list; add /auth/callback explicitly.',
-        'Send as a domain address such as no-reply@your-domain.com and publish SPF, DKIM and DMARC records so mail is not marked as spam.',
-        'Keep Confirm email enabled for public deployments. AUTO_CONFIRM_SIGNUPS=true skips the email for demos but does not verify address ownership.',
-        'After confirmation the person returns to /login with a confirmed notice, or straight to the dashboard when the browser already holds a session.',
+        'Custom SMTP and the templates in supabase/templates cover password reset and invitation mail. Send as a domain address and publish SPF, DKIM and DMARC records.',
+        'Email ownership is trusted on first use, so anyone can register with an address they do not own. Restore Supabase confirmations if you later need verified addresses.',
       ],
     },
     { kind: 'h2', text: 'Deployment checklist' },
@@ -881,7 +881,7 @@ function content(): Block[] {
         'Set NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY, SUPABASE_SERVICE_ROLE_KEY and NEXT_PUBLIC_APP_URL in the hosting provider.',
         'Set the Auth site URL and redirect allow-list to your real domain, configure custom SMTP and apply the branded templates.',
         'Run the owner bootstrap once, then sign in and confirm Platform control loads.',
-        'Build and start the app, then smoke-test: register, confirmation, teacher request, approval, enrollment, lesson progress, quiz, assignment, certificate and public verification.',
+        'Build and start the app, then smoke-test: instant signup, teacher request, approval, enrollment, lesson progress, quiz, assignment, certificate and public verification.',
       ],
     },
     { kind: 'h2', text: 'Troubleshooting' },
@@ -890,7 +890,7 @@ function content(): Block[] {
       headers: ['Symptom', 'Fix'],
       rows: [
         ['Registration says signups are disabled', 'Enable allow_signups in platform settings.'],
-        ['Confirmation email never arrives', 'Local: open Mailpit. Hosted: verify custom SMTP, the sender domain and the Auth email log.'],
+        ['Password reset email never arrives', 'Local: open Mailpit. Hosted: verify custom SMTP, the sender domain and the Auth email log.'],
         ['Uploads fail after a fresh start', 'Run npm run db:seed or npm run db:compat to apply the storage compatibility index.'],
         ['A page renders but buttons do nothing in tests', 'Next 16 blocks cross-origin dev resources; keep 127.0.0.1 and localhost in allowedDevOrigins.'],
         ['Port 3000 is already in use', 'Stop the other process or run Playwright with PLAYWRIGHT_PORT.'],
@@ -941,7 +941,7 @@ function content(): Block[] {
       kind: 'bullets',
       items: [
         'README.md: setup, architecture summary, scripts and deployment checklist.',
-        'DEPLOYMENT.md: hosted Supabase, Vercel, owner recovery, SMTP, DNS and confirmation links.',
+        'DEPLOYMENT.md: hosted Supabase, Vercel, owner recovery, SMTP, DNS and reset links.',
         'PROJECT_ARCHITECTURE.md: stack decisions, directory layout, authorization layers and data flow.',
         'DATABASE_SCHEMA.md: tables, functions, RLS policy map, storage and migrations.',
         'IMPLEMENTATION_PLAN.md: delivered phases and recorded verification results.',
@@ -974,8 +974,14 @@ function drawCover(doc: PDFDocument, regular: PDFFont, bold: PDFFont) {
   page.drawEllipse({ x: 70, y: 90, xScale: 160, yScale: 100, color: accent, opacity: 0.18 });
   page.drawRectangle({ x: 0, y: height - 6, width, height: 6, color: gold });
 
-  page.drawText('LUMINA', { x: 54, y: height - 82, size: 11, font: bold, color: gold });
-  page.drawText('LMS', { x: 112, y: height - 82, size: 11, font: bold, color: rgb(0.7, 0.72, 0.85) });
+  page.drawText('LEARNOVA', { x: 54, y: height - 82, size: 11, font: bold, color: gold });
+  page.drawText('LMS', {
+    x: 54 + bold.widthOfTextAtSize('LEARNOVA', 11) + 6,
+    y: height - 82,
+    size: 11,
+    font: bold,
+    color: rgb(0.7, 0.72, 0.85),
+  });
 
   page.drawText('Platform &', { x: 54, y: height - 210, size: 44, font: bold, color: white });
   page.drawText('User Guide', { x: 54, y: height - 262, size: 44, font: bold, color: white });
@@ -991,12 +997,13 @@ function drawCover(doc: PDFDocument, regular: PDFFont, bold: PDFFont) {
 
 const meta: [string, string][] = [
   ['Edition', 'Version 1.0'],
+  ['Developer', 'Mustafa Muhamed'],
   ['Audience', 'Platform owners, admins, instructors'],
   ['Stack', 'Next.js 16, Supabase, Postgres RLS'],
 ];
 
 meta.forEach(([label, value], index) => {
-  const y = 252 - index * 46;
+  const y = 270 - index * 40;
 
   page.drawText(label.toUpperCase(), {
     x: 54,
@@ -1016,7 +1023,13 @@ meta.forEach(([label, value], index) => {
 });
 
   page.drawLine({ start: { x: 54, y: 118 }, end: { x: width - 54, y: 118 }, color: rgb(0.3, 0.32, 0.48), thickness: 0.7 });
-  page.drawText('Lumina LMS', { x: 54, y: 96, size: 9, font: bold, color: rgb(0.72, 0.74, 0.86) });
+  page.drawText('Learnova LMS  /  Developed by Mustafa Muhamed', {
+    x: 54,
+    y: 96,
+    size: 9,
+    font: bold,
+    color: rgb(0.72, 0.74, 0.86),
+  });
   page.drawText('November 2026', {
     x: width - 54 - regular.widthOfTextAtSize('November 2026', 9),
     y: 96,
@@ -1106,7 +1119,15 @@ function drawFooters(doc: PDFDocument, regular: PDFFont) {
       color: border,
       thickness: 0.6,
     });
-    page.drawText('Lumina LMS  /  Platform & User Guide', { x: MARGIN.left, y: 34, size: 7.6, font: regular, color: muted });
+    page.drawText('Learnova LMS  /  Platform & User Guide', { x: MARGIN.left, y: 34, size: 7.6, font: regular, color: muted });
+    const credit = 'Developed by Mustafa Muhamed';
+    page.drawText(credit, {
+      x: MARGIN.left + (CONTENT_WIDTH - regular.widthOfTextAtSize(credit, 7.2)) / 2,
+      y: 34,
+      size: 7.2,
+      font: regular,
+      color: muted,
+    });
     const label = `${index + 1} / ${total}`;
     page.drawText(label, {
       x: PAGE.width - MARGIN.right - regular.widthOfTextAtSize(label, 7.6),
@@ -1133,11 +1154,11 @@ async function main() {
   draw.render(blocks);
   drawFooters(draw.doc, draw.regular);
 
-  draw.doc.setTitle('Lumina LMS - Platform & User Guide');
-  draw.doc.setAuthor('Lumina LMS');
+  draw.doc.setTitle('Learnova LMS - Platform & User Guide');
+  draw.doc.setAuthor('Mustafa Muhamed');
   draw.doc.setSubject('Setup, administration, teaching and learning guide');
-  draw.doc.setKeywords(['LMS', 'Supabase', 'Next.js', 'multi-tenant', 'guide']);
-  draw.doc.setCreator('Lumina LMS');
+  draw.doc.setKeywords(['Learnova', 'LMS', 'Supabase', 'Next.js', 'multi-tenant', 'guide']);
+  draw.doc.setCreator('Mustafa Muhamed');
 
   const bytes = await draw.doc.save();
   await mkdir(path.dirname(OUTPUT), { recursive: true });

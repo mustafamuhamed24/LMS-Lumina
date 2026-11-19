@@ -1,17 +1,19 @@
-# Lumina LMS
+# Learnova LMS
 
 A production-oriented, multi-tenant Learning Management System built with the Next.js App Router,
 Supabase and Postgres Row Level Security.
 
-Lumina gives one deployment to many organizations while keeping every tenant, course, submission
+Learnova gives one deployment to many organizations while keeping every tenant, course, submission
 and certificate isolated. It ships with role-based dashboards for platform owners, organization
 admins, instructors and students, a full course builder, secure quizzes, assignment grading,
 certificates with public verification, notifications and real database-driven analytics.
 
-- **Platform guide (PDF):** [`docs/Lumina-LMS-Platform-Guide.pdf`](docs/Lumina-LMS-Platform-Guide.pdf)
+**Developer:** Mustafa Muhamed
+
+- **Platform guide (PDF):** [`docs/Learnova-LMS-Platform-Guide.pdf`](docs/Learnova-LMS-Platform-Guide.pdf)
   — regenerate with `npm run docs:pdf`
 - **Deployment:** [`DEPLOYMENT.md`](DEPLOYMENT.md) — hosted Supabase, Vercel, owner login and
-  branded confirmation email
+  instant, verification-free signup
 - **Architecture:** [`PROJECT_ARCHITECTURE.md`](PROJECT_ARCHITECTURE.md)
 - **Database & RLS:** [`DATABASE_SCHEMA.md`](DATABASE_SCHEMA.md)
 - **Delivery plan & verification:** [`IMPLEMENTATION_PLAN.md`](IMPLEMENTATION_PLAN.md)
@@ -110,15 +112,15 @@ All seeded accounts use the demo password `Passw0rd!` unless `SEED_PASSWORD` is 
 
 | Email | Role | Name |
 | --- | --- | --- |
-| `super@lumina.test` | Platform owner (super admin) | Sage Whitfield |
-| `admin@lumina.test` | Organization admin, Lumina Academy | Priya Raman |
+| `super@learnova.test` | Platform owner (super admin) | Sage Whitfield |
+| `admin@learnova.test` | Organization admin, Learnova Academy | Priya Raman |
 | `admin@northstar.test` | Organization admin, Northstar Institute | Marcus Bell |
-| `maya@lumina.test` | Instructor | Maya Chen |
-| `leo@lumina.test` | Instructor | Leo Martins |
+| `maya@learnova.test` | Instructor | Maya Chen |
+| `leo@learnova.test` | Instructor | Leo Martins |
 | `nina@northstar.test` | Instructor | Nina Patel |
-| `student@lumina.test` | Student (completed course + certificate) | Amara Okafor |
-| `diego@lumina.test` | Student | Diego Alvarez |
-| `sofia@lumina.test` | Student with a pending teacher request | Sofia Rossi |
+| `student@learnova.test` | Student (completed course + certificate) | Amara Okafor |
+| `diego@learnova.test` | Student | Diego Alvarez |
+| `sofia@learnova.test` | Student with a pending teacher request | Sofia Rossi |
 | `student@northstar.test` | Student in the second tenant | Noah Kim |
 
 The seed also creates two organizations, six courses, 38 lessons, quizzes, assignments, progress,
@@ -133,7 +135,7 @@ create one.
 
 ### Locally
 
-Sign in with `super@lumina.test` / `Passw0rd!`. The local seed always includes this account.
+Sign in with `super@learnova.test` / `Passw0rd!`. The local seed always includes this account.
 
 ### On a real deployment
 
@@ -141,7 +143,7 @@ Use the bootstrap script. It creates or updates the auth user, promotes the prof
 organization membership and writes an audit entry.
 
 ```bash
-npm run admin:create -- owner@example.com "Platform Owner" "S3curePass!" lumina-academy
+npm run admin:create -- owner@example.com "Platform Owner" "S3curePass!" learnova-academy
 ```
 
 - The password and organization slug are optional.
@@ -238,7 +240,7 @@ Prefer `npm run admin:create`; it exercises the same service-role path the appli
 - Distraction-free learning player, automatic progress and completion.
 - Quizzes with timers and attempt history; assignment submissions with files and feedback.
 - Certificates with PDF download and a public `/verify` page.
-- Notifications, profile management, and **Teach on Lumina** to request instructor access.
+- Notifications, profile management, and **Teach on Learnova** to request instructor access.
 
 ## Routes
 
@@ -293,7 +295,7 @@ tests/
 | `npm run db:compat` | Apply the storage compatibility index only |
 | `npm run db:types` | Regenerate Supabase TypeScript types |
 | `npm run admin:create -- <email> [name] [password] [org-slug]` | Create or promote the platform owner |
-| `npm run docs:pdf` | Regenerate `docs/Lumina-LMS-Platform-Guide.pdf` |
+| `npm run docs:pdf` | Regenerate `docs/Learnova-LMS-Platform-Guide.pdf` |
 | `npm run verify:all` | typecheck + lint + unit tests + build |
 
 `npm run db:types` expects the Supabase CLI on `PATH`. If it is not installed globally, use:
@@ -336,13 +338,13 @@ The full walkthrough is in [`DEPLOYMENT.md`](DEPLOYMENT.md). In short:
    [`.env.production.example`](.env.production.example) as the checklist.
 5. In Supabase Auth, set **Site URL** and the redirect allow-list to the deployed domain. Add
    `https://your-domain.com/auth/callback`.
-6. Configure custom SMTP so confirmation and reset mail is sent as **Lumina LMS** from your domain,
-   then paste the branded files from [`supabase/templates/`](supabase/templates) into
-   **Authentication → Emails → Templates**.
+6. Configure custom SMTP if you want reset and invitation mail sent as **Learnova LMS** from your
+   domain, then paste the branded files from [`supabase/templates/`](supabase/templates) into
+   **Authentication → Emails → Templates**. Signup does not require confirmation mail.
 7. Create or recover the platform owner with
    `npm run admin:create -- owner@example.com "Owner"`, then sign in at `/login`.
-8. Smoke-test signup, confirmation, password reset, all four roles, enrollment, a quiz, an
-   assignment, certificate download and public verification.
+8. Smoke-test signup (instant access, no verification), password reset, all four roles, enrollment,
+   a quiz, an assignment, certificate download and public verification.
 
 `NEXT_PUBLIC_APP_URL` is embedded at build time; changing it requires a redeploy. If it is missing
 or still local, the app falls back to the request host, but Supabase still needs the deployed domain
@@ -373,7 +375,8 @@ storage; it bypasses RLS by design.
 | Symptom | Fix |
 | --- | --- |
 | Registration says signups are disabled | Enable `allow_signups` in **Admin → Settings**. |
-| Confirmation email never arrives | Local: open Mailpit at <http://127.0.0.1:54324>. Hosted: check SMTP. |
+| Signup says the email already exists | The address is registered | Sign in instead, or use **Forgot password**. |
+| No reset email | Local: open Mailpit at <http://127.0.0.1:54324>. Hosted: check SMTP. |
 | Uploads fail after a fresh start | Run `npm run db:seed` or `npm run db:compat` to apply the storage unique index. |
 | Client buttons do nothing in Playwright | Keep `127.0.0.1` and `localhost` in `allowedDevOrigins`. |
 | Port 3000 is taken | Stop the other process, or run Playwright with `PLAYWRIGHT_PORT`. |

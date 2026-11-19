@@ -1,5 +1,5 @@
 -- =============================================================================
--- Lumina LMS — core schema
+-- Learnova LMS — core schema
 -- Multi-tenant LMS: organizations, users, courses, learning, assessment.
 -- =============================================================================
 
@@ -40,10 +40,10 @@ create index organizations_active_idx on public.organizations (is_active) where 
 -- ── Platform settings (single row) ───────────────────────────────────────────
 create table public.platform_settings (
   id boolean primary key default true check (id),
-  platform_name text not null default 'Lumina LMS',
+  platform_name text not null default 'Learnova LMS',
   tagline text not null default 'Knowledge, structured.',
   logo_url text,
-  support_email text not null default 'support@lumina.test',
+  support_email text not null default 'support@learnova.test',
   allow_signups boolean not null default true,
   require_enrollment_approval boolean not null default false,
   primary_color text not null default '#4f46e5' check (primary_color ~ '^#[0-9a-fA-F]{6}$'),

@@ -145,6 +145,37 @@
     outline-offset: 2px;
   }
 
+  /* Arabic-friendly stack: Latin-only faces fall back poorly for Arabic glyphs. */
+  html[dir='rtl'] body {
+    font-family: 'Segoe UI', Tahoma, 'Noto Naskh Arabic', 'Noto Sans Arabic', 'Geeza Pro', Arial, sans-serif;
+    letter-spacing: 0;
+  }
+
+  html[dir='rtl'] .prose-lesson ul,
+  html[dir='rtl'] .prose-lesson ol {
+    padding-left: 0;
+    padding-right: 1.5rem;
+  }
+
+  html[dir='rtl'] .prose-lesson blockquote {
+    border-left: 0;
+    border-right: 3px solid var(--primary);
+    padding-left: 0;
+    padding-right: 1rem;
+  }
+
+  /* Course video protection: remove the easy copy/save affordances. */
+  [data-protected-video] {
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+  }
+
+  [data-protected-video] video::-webkit-media-controls-download-button,
+  [data-protected-video] video::-internal-media-controls-download-button {
+    display: none;
+  }
+
   h1,
   h2,
   h3,

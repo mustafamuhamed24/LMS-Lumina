@@ -24,7 +24,7 @@ export default async function VerifyCertificatePage({
         <span className="mx-auto flex size-12 items-center justify-center rounded-full bg-primary/10 text-primary">
           <ShieldCheck className="size-6" />
         </span>
-        <h1 className="mt-4 text-2xl font-semibold tracking-tight">Verify a Lumina certificate</h1>
+        <h1 className="mt-4 text-2xl font-semibold tracking-tight">Verify a Learnova certificate</h1>
         <p className="mx-auto mt-2 max-w-xl text-sm text-muted-foreground">
           Enter the credential code printed on a certificate to confirm its authenticity and view the achievement details.
         </p>
@@ -57,7 +57,7 @@ export default async function VerifyCertificatePage({
             <CardTitle className="flex items-center gap-2 text-emerald-700 dark:text-emerald-300">
               <BadgeCheck className="size-5" /> Certificate verified
             </CardTitle>
-            <CardDescription>The credential below is authentic and was issued by Lumina LMS.</CardDescription>
+            <CardDescription>The credential below is authentic and was issued by Learnova LMS.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-5 py-6">
             <div className="text-center">

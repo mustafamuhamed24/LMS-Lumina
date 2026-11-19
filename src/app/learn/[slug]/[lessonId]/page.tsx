@@ -25,7 +25,8 @@ import { markLessonCompleteAction, startQuizAttemptAction } from '@/features/stu
 import { QuizRunner } from '@/features/student/components/quiz-runner';
 import { AssignmentSubmission } from '@/features/student/components/assignment-submission';
 import { RichTextContent } from '@/components/shared/rich-text-content';
-import { Brand } from '@/components/layouts/public-shell';
+import { ProtectedEmbed, ProtectedVideo } from '@/components/shared/protected-video';
+import { Brand } from '@/components/brand/learnova-logo';
 import { SubmitButton } from '@/components/forms/submit-button';
 import { ThemeToggle } from '@/components/shared/theme-toggle';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
@@ -125,6 +126,7 @@ export default async function LearnLessonPage({
   const CurrentTypeIcon = typeIcons[currentLesson.type] ?? FileText;
   const embedUrl = currentLesson.video_url ? videoEmbed(currentLesson.video_url) : null;
   const directVideo = currentLesson.video_url && !embedUrl ? currentLesson.video_url : null;
+  const watermark = user.profile.email;
   const attemptsUsed = quizAttempts.length;
   const passingAttempt = quizAttempts.find((attempt) => attempt.passed);
 
@@ -236,21 +238,11 @@ export default async function LearnLessonPage({
 
             <div className="space-y-5 px-4 py-5 sm:px-6">
               {currentLesson.type === 'video' && currentLesson.video_url ? (
-                <div className="overflow-hidden rounded-lg border bg-black">
-                  {embedUrl ? (
-                    <iframe
-                      src={embedUrl}
-                      title={currentLesson.title}
-                      className="aspect-video w-full"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                      allowFullScreen
-                    />
-                  ) : directVideo ? (
-                    <video controls src={directVideo} className="aspect-video w-full">
-                      Your browser does not support embedded video.
-                    </video>
-                  ) : null}
-                </div>
+                embedUrl ? (
+                  <ProtectedEmbed src={embedUrl} title={currentLesson.title} watermark={watermark} />
+                ) : directVideo ? (
+                  <ProtectedVideo src={directVideo} title={currentLesson.title} watermark={watermark} />
+                ) : null
               ) : null}
 
               {currentLesson.content ? (
@@ -419,7 +411,7 @@ export default async function LearnLessonPage({
 
           <div className="mt-4 flex flex-wrap items-center justify-between gap-2 px-1 text-[11px] text-muted-foreground">
             <span>
-              {course.instructor?.full_name ? `Instructor: ${course.instructor.full_name}` : 'Lumina LMS'}
+              {course.instructor?.full_name ? `Instructor: ${course.instructor.full_name}` : 'Learnova LMS'}
             </span>
             <span>{formatDuration(course.duration_minutes)} · {course.difficulty}</span>
           </div>

@@ -25,6 +25,35 @@ function safeNext(value: FormDataEntryValue | null): string | null {
   return value;
 }
 
+function isEmailUnconfirmed(error: unknown): boolean {
+  const code = (error as { code?: string } | null)?.code;
+  const message = error instanceof Error ? error.message : '';
+  return code === 'email_not_confirmed' || /email not confirmed/i.test(message);
+}
+
+/**
+ * Learnova does not require email verification. Accounts created before this
+ * behaviour was introduced may still be unconfirmed, so we confirm them
+ * server-side before retrying the sign-in.
+ */
+async function confirmAccountByEmail(email: string): Promise<boolean> {
+  const admin = createAdminClient();
+  const { data, error } = await admin.auth.admin.listUsers({ page: 1, perPage: 1000 });
+  if (error) throw error;
+
+  const account = data.users.find((user) => user.email?.toLowerCase() === email.toLowerCase());
+  if (!account) return false;
+
+  if (!account.email_confirmed_at) {
+    const { error: confirmError } = await admin.auth.admin.updateUserById(account.id, {
+      email_confirm: true,
+    });
+    if (confirmError) throw confirmError;
+  }
+
+  return true;
+}
+
 export async function signInAction(_prev: FormState, formData: FormData): Promise<FormState> {
   const parsed = signInSchema.safeParse({
     email: formData.get('email'),
@@ -38,10 +67,19 @@ export async function signInAction(_prev: FormState, formData: FormData): Promis
 
   try {
     const supabase = await createServerSupabaseClient();
-    const { data, error } = await supabase.auth.signInWithPassword({
+    const credentials = {
       email: parsed.data.email,
       password: parsed.data.password,
-    });
+    };
+
+    let { data, error } = await supabase.auth.signInWithPassword(credentials);
+
+    if (error && isEmailUnconfirmed(error)) {
+      const confirmed = await confirmAccountByEmail(parsed.data.email);
+      if (confirmed) {
+        ({ data, error } = await supabase.auth.signInWithPassword(credentials));
+      }
+    }
 
     if (error) throw error;
     if (!data.user) return errorState('Unable to sign in. Please try again.');
@@ -89,40 +127,55 @@ export async function signUpAction(_prev: FormState, formData: FormData): Promis
 
   try {
     const supabase = await createServerSupabaseClient();
-    const appUrl = await resolveAppUrl();
     const { data: settings } = await supabase.from('platform_settings').select('allow_signups').eq('id', true).maybeSingle();
 
     if (settings && !settings.allow_signups) {
       return errorState('New registrations are currently disabled. Please contact your administrator.');
     }
 
-    const { data, error } = await supabase.auth.signUp({
+    // Learnova does not require email verification, so create the account with
+    // the service role: the user is confirmed on creation, no confirmation mail
+    // is sent, and Supabase's signup email rate limit cannot block registration.
+    const admin = createAdminClient();
+    const { data: created, error: createError } = await admin.auth.admin.createUser({
       email: parsed.data.email,
       password: parsed.data.password,
-      options: {
-        data: { full_name: parsed.data.fullName },
-        emailRedirectTo: `${appUrl}/auth/callback`,
-      },
+      email_confirm: true,
+      user_metadata: { full_name: parsed.data.fullName },
     });
 
-    if (error) throw error;
+    if (createError) {
+      const code = (createError as { code?: string }).code ?? '';
+      if (code === 'email_exists' || /already (been )?registered|email exists/i.test(createError.message)) {
+        return errorState('An account with that email already exists. Sign in instead, or reset your password.');
+      }
+      throw createError;
+    }
+
+    if (!created.user) return errorState('Unable to create your account. Please try again.');
+
+    // Open a session immediately so people land in their workspace.
+    const { error: signInError } = await supabase.auth.signInWithPassword({
+      email: parsed.data.email,
+      password: parsed.data.password,
+    });
+    if (signInError) throw signInError;
 
     let instructorRequested = false;
-    if (parsed.data.accountType === 'instructor' && data.user) {
+    if (parsed.data.accountType === 'instructor') {
       // The signup trigger creates a student profile in the first active
       // organization. Record the teaching request there for an admin to review;
       // the role itself is never granted by public signup.
-      const admin = createAdminClient();
       const { data: profile } = await admin
         .from('profiles')
         .select('default_org_id')
-        .eq('id', data.user.id)
+        .eq('id', created.user.id)
         .maybeSingle();
       const orgId = profile?.default_org_id ?? null;
 
       if (orgId) {
         const { error: requestError } = await admin.from('instructor_requests').insert({
-          user_id: data.user.id,
+          user_id: created.user.id,
           org_id: orgId,
           status: 'pending',
           message: parsed.data.instructorNote,
@@ -144,7 +197,7 @@ export async function signUpAction(_prev: FormState, formData: FormData): Promis
                 user_id: adminUser.id,
                 type: 'system' as const,
                 title: 'New instructor request',
-                body: `${parsed.data.fullName} (${parsed.data.email}) asked to teach on Lumina.`,
+                body: `${parsed.data.fullName} (${parsed.data.email}) asked to teach on Learnova.`,
                 link: '/admin/users',
               })),
             );
@@ -152,45 +205,19 @@ export async function signUpAction(_prev: FormState, formData: FormData): Promis
 
           await admin.from('activity_logs').insert({
             org_id: orgId,
-            user_id: data.user.id,
+            user_id: created.user.id,
             action: 'instructor.requested',
             entity_type: 'profile',
-            entity_id: data.user.id,
+            entity_id: created.user.id,
             metadata: { email: parsed.data.email },
           });
         }
       }
     }
 
-    if (data.session) {
-      redirect(instructorRequested ? '/student/become-instructor?requested=1' : '/student');
-    }
-
-    // Opt-in convenience for demos and internal deployments: confirm the
-    // account server-side and sign the person straight in. Email ownership is
-    // not verified in this mode, so it stays off by default.
-    if (process.env.AUTO_CONFIRM_SIGNUPS === 'true' && data.user) {
-      const admin = createAdminClient();
-      const { error: confirmError } = await admin.auth.admin.updateUserById(data.user.id, {
-        email_confirm: true,
-      });
-      if (confirmError) throw confirmError;
-
-      const { error: signInError } = await supabase.auth.signInWithPassword({
-        email: parsed.data.email,
-        password: parsed.data.password,
-      });
-      if (signInError) throw signInError;
-
-      redirect(instructorRequested ? '/student/become-instructor?requested=1' : '/student');
-    }
-
-    return {
-      status: 'success',
-      message: instructorRequested
-        ? `Account created. We sent a confirmation link from Lumina LMS to ${parsed.data.email}. Your instructor request is pending review — confirm your email, then sign in.`
-        : `Account created. We sent a confirmation link from Lumina LMS to ${parsed.data.email}. Confirm your email, then sign in.`,
-    };
+    // The account is confirmed and signed in at this point, so send the person
+    // straight to their workspace. `welcome=1` triggers a one-time toast.
+    redirect(instructorRequested ? '/student/become-instructor?requested=1&welcome=1' : '/student?welcome=1');
   } catch (error) {
     if (error instanceof Error && 'digest' in error) throw error;
     const result = actionError(error, 'signUp');

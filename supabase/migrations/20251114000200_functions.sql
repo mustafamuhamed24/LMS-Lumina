@@ -1,5 +1,5 @@
 -- =============================================================================
--- Lumina LMS — helper predicates, triggers and transactional RPCs
+-- Learnova LMS — helper predicates, triggers and transactional RPCs
 -- All security-definer functions use an empty search_path and qualified names.
 -- =============================================================================
 
@@ -452,7 +452,7 @@ as $$
 declare
   v_course uuid;
 begin
-  if auth.role() = 'service_role' or current_setting('lumina.system_update', true) = 'on' then
+  if auth.role() = 'service_role' or current_setting('learnova.system_update', true) = 'on' then
     return new;
   end if;
 
@@ -708,7 +708,7 @@ set search_path = ''
 as $$
 begin
   if auth.role() = 'service_role'
-     or current_setting('lumina.system_update', true) = 'on'
+     or current_setting('learnova.system_update', true) = 'on'
      or public.is_course_manager(old.course_id)
      or public.is_org_admin(old.org_id) then
     return new;
@@ -768,7 +768,7 @@ begin
     raise exception 'This course is not open for enrollment' using errcode = 'P0002';
   end if;
 
-  perform set_config('lumina.system_update', 'on', true);
+  perform set_config('learnova.system_update', 'on', true);
 
   select * into v_existing
   from public.enrollments e
@@ -886,7 +886,7 @@ begin
     raise exception 'You must be enrolled to track progress' using errcode = '42501';
   end if;
 
-  perform set_config('lumina.system_update', 'on', true);
+  perform set_config('learnova.system_update', 'on', true);
 
   insert into public.lesson_progress (org_id, enrollment_id, lesson_id, student_id, completed_at, last_viewed_at)
   values (v_course.org_id, v_enrollment.id, p_lesson_id, v_uid,
@@ -934,7 +934,7 @@ begin
         student_name, course_title, instructor_name, org_name
       ) values (
         v_course.org_id, v_enrollment.id, v_uid, v_course.id, v_code,
-        coalesce(v_student, 'Student'), v_course.title, coalesce(v_instructor, 'Instructor'), coalesce(v_org, 'Lumina')
+        coalesce(v_student, 'Student'), v_course.title, coalesce(v_instructor, 'Instructor'), coalesce(v_org, 'Learnova')
       )
       on conflict (enrollment_id) do nothing
       returning code into v_code;

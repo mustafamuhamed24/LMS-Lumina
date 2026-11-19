@@ -1,6 +1,10 @@
 import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import { Providers } from '@/components/providers';
+import { SupportWidget } from '@/components/support/support-widget';
+import { dirFor } from '@/lib/i18n/config';
+import { getLocale } from '@/lib/i18n/server';
+import { getPlatformSettings } from '@/lib/data/settings';
 
 export const metadata: Metadata = {
   title: {
@@ -10,11 +14,16 @@ export const metadata: Metadata = {
   description:
     'Learnova is a modern learning management system for organizations, instructors and learners — courses, assessments, progress and certificates in one place.',
   applicationName: 'Learnova LMS',
-  authors: [{ name: 'Learnova' }],
+  authors: [{ name: 'Mustafa Muhamed' }],
+  creator: 'Mustafa Muhamed',
+  publisher: 'Learnova',
   openGraph: {
     title: 'Learnova LMS',
     description: 'A modern, organization-ready learning platform.',
     type: 'website',
+  },
+  icons: {
+    icon: '/icon.svg',
   },
 };
 
@@ -25,11 +34,21 @@ export const viewport: Viewport = {
   ],
 };
 
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  const [locale, settings] = await Promise.all([
+    getLocale(),
+    getPlatformSettings().catch(() => null),
+  ]);
+  const supportEmail =
+    settings?.support_email || process.env.NEXT_PUBLIC_SUPPORT_EMAIL || 'support@learnova.test';
+
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang={locale} dir={dirFor(locale)} suppressHydrationWarning>
       <body className="min-h-dvh antialiased">
-        <Providers>{children}</Providers>
+        <Providers locale={locale}>
+          {children}
+          <SupportWidget email={supportEmail} whatsapp={process.env.NEXT_PUBLIC_SUPPORT_WHATSAPP} />
+        </Providers>
       </body>
     </html>
   );

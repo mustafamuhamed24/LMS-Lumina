@@ -1,4 +1,4 @@
-# Lumina LMS — Implementation Plan
+# Learnova LMS — Implementation Plan
 
 > Status legend: [x] complete & verified · [~] implemented, pending verification · [ ] pending
 >

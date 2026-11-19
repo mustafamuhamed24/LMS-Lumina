@@ -1,5 +1,5 @@
 -- =============================================================================
--- Lumina LMS — storage buckets and policies
+-- Learnova LMS — storage buckets and policies
 -- Avatars are public. Course media and submission files are private and are
 -- uploaded/downloaded through authorized server routes using the admin client.
 -- =============================================================================

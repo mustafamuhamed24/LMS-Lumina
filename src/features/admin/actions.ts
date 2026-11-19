@@ -137,7 +137,7 @@ export async function createUserAction(_prev: FormState, formData: FormData): Pr
       org_id: parsed.data.orgId,
       user_id: data.user.id,
       type: 'system',
-      title: 'Welcome to Lumina',
+      title: 'Welcome to Learnova',
       body: `Your ${parsed.data.role.replace('_', ' ')} account has been created. Sign in to get started.`,
       link: parsed.data.role === 'student' ? '/student' : parsed.data.role === 'instructor' ? '/instructor' : '/admin',
     });

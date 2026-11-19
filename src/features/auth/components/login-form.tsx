@@ -9,9 +9,11 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { useTranslator } from '@/lib/i18n/client';
 
 export function LoginForm({ next }: { next?: string }) {
   const [state, action, pending] = useActionState(signInAction, initialFormState);
+  const t = useTranslator();
 
   return (
     <form action={action} className="space-y-5" noValidate>
@@ -24,7 +26,7 @@ export function LoginForm({ next }: { next?: string }) {
       ) : null}
 
       <div className="space-y-2">
-        <Label htmlFor="email">Email address</Label>
+        <Label htmlFor="email">{t('login.email')}</Label>
         <Input
           id="email"
           name="email"
@@ -39,9 +41,9 @@ export function LoginForm({ next }: { next?: string }) {
 
       <div className="space-y-2">
         <div className="flex items-center justify-between">
-          <Label htmlFor="password">Password</Label>
+          <Label htmlFor="password">{t('login.password')}</Label>
           <Link href="/forgot-password" className="text-xs font-medium text-primary hover:underline">
-            Forgot password?
+            {t('login.forgot')}
           </Link>
         </div>
         <Input
@@ -58,13 +60,13 @@ export function LoginForm({ next }: { next?: string }) {
 
       <Button type="submit" className="w-full" disabled={pending}>
         {pending ? <Loader2 className="animate-spin" /> : null}
-        {pending ? 'Signing in…' : 'Sign in'}
+        {pending ? t('login.pending') : t('login.submit')}
       </Button>
 
       <p className="text-center text-sm text-muted-foreground">
-        New to Lumina?{' '}
+        {t('login.noAccount')}{' '}
         <Link href="/register" className="font-medium text-primary hover:underline">
-          Create an account
+          {t('login.createAccount')}
         </Link>
       </p>
     </form>

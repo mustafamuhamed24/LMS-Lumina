@@ -18,10 +18,11 @@ import { getCategories, getFeaturedCourses } from '@/features/courses/queries';
 import { CourseCard } from '@/components/shared/course-card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { getTranslator } from '@/lib/i18n/server';
 import { formatNumber, percent } from '@/lib/utils';
 
 export default async function HomePage() {
-  const supabase = await createServerSupabaseClient();
+  const [{ t }, supabase] = await Promise.all([getTranslator(), createServerSupabaseClient()]);
   const [statsResult, featured, categories, organizationsResult, categoryCoursesResult] = await Promise.all([
     supabase.rpc('get_public_stats'),
     getFeaturedCourses(6),
@@ -49,36 +50,35 @@ export default async function HomePage() {
         <div className="mx-auto grid max-w-6xl gap-12 px-4 pb-16 pt-16 sm:px-6 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:pb-24 lg:pt-24">
           <div>
             <Badge variant="outline" className="gap-1.5 border-primary/20 bg-primary/5 px-3 py-1 text-primary">
-              <Sparkles className="size-3" /> Built for modern learning organizations
+              <Sparkles className="size-3" /> {t('home.badge')}
             </Badge>
             <h1 className="mt-5 max-w-2xl text-4xl font-semibold leading-[1.08] tracking-tight text-balance sm:text-5xl lg:text-[3.4rem]">
-              Learning that stays organized, measurable and calm.
+              {t('home.title')}
             </h1>
             <p className="mt-5 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-[17px]">
-              Lumina brings course delivery, assessments, learner progress and certification into a single workspace for
-              administrators, instructors and students.
+              {t('home.body')}
             </p>
             <div className="mt-8 flex flex-wrap items-center gap-3">
               <Button asChild size="lg">
                 <Link href="/courses">
-                  Explore courses <ArrowRight />
+                  {t('home.explore')} <ArrowRight className="rtl:rotate-180" />
                 </Link>
               </Button>
               <Button asChild size="lg" variant="outline">
-                <Link href="/register">Create an account</Link>
+                <Link href="/register">{t('home.create')}</Link>
               </Button>
             </div>
             <dl className="mt-10 grid max-w-lg grid-cols-3 gap-6 border-t pt-6">
               <div>
-                <dt className="text-[11px] uppercase tracking-wider text-muted-foreground">Published courses</dt>
+                <dt className="text-[11px] uppercase tracking-wider text-muted-foreground">{t('home.stats.courses')}</dt>
                 <dd className="mt-1 text-2xl font-semibold">{formatNumber(stats?.courses ?? 0)}</dd>
               </div>
               <div>
-                <dt className="text-[11px] uppercase tracking-wider text-muted-foreground">Active learners</dt>
+                <dt className="text-[11px] uppercase tracking-wider text-muted-foreground">{t('home.stats.learners')}</dt>
                 <dd className="mt-1 text-2xl font-semibold">{formatNumber(stats?.learners ?? 0)}</dd>
               </div>
               <div>
-                <dt className="text-[11px] uppercase tracking-wider text-muted-foreground">Organizations</dt>
+                <dt className="text-[11px] uppercase tracking-wider text-muted-foreground">{t('home.stats.organizations')}</dt>
                 <dd className="mt-1 text-2xl font-semibold">{formatNumber(stats?.organizations ?? 0)}</dd>
               </div>
             </dl>
@@ -91,15 +91,15 @@ export default async function HomePage() {
                   <span className="flex size-7 items-center justify-center rounded-md bg-primary/10 text-primary">
                     <PlayCircle className="size-4" />
                   </span>
-                  Continue learning
+                  {t('home.preview.continue')}
                 </div>
-                <Badge variant="muted">This week</Badge>
+                <Badge variant="muted">{t('home.preview.week')}</Badge>
               </div>
               <div className="mt-4 space-y-3">
                 {[
-                  { title: 'Product design foundations', meta: 'Module 3 · Interaction patterns', progress: 68 },
-                  { title: 'TypeScript engineering', meta: 'Module 2 · Type-safe APIs', progress: 42 },
-                  { title: 'Data storytelling', meta: 'Completed · Certificate issued', progress: 100 },
+                  { title: t('home.preview.course1'), meta: t('home.preview.module3'), progress: 68 },
+                  { title: t('home.preview.course2'), meta: t('home.preview.module2'), progress: 42 },
+                  { title: t('home.preview.course3'), meta: t('home.preview.completed'), progress: 100 },
                 ].map((item) => (
                   <div key={item.title} className="rounded-lg border bg-background/60 p-3.5">
                     <div className="flex items-center justify-between gap-3">
@@ -116,26 +116,26 @@ export default async function HomePage() {
               <div className="mt-4 grid grid-cols-3 gap-2 border-t pt-4 text-center">
                 <div>
                   <p className="text-lg font-semibold">12</p>
-                  <p className="text-[10px] uppercase tracking-wide text-muted-foreground">Lessons</p>
+                  <p className="text-[10px] uppercase tracking-wide text-muted-foreground">{t('home.preview.lessons')}</p>
                 </div>
                 <div>
                   <p className="text-lg font-semibold">4</p>
-                  <p className="text-[10px] uppercase tracking-wide text-muted-foreground">Assessments</p>
+                  <p className="text-[10px] uppercase tracking-wide text-muted-foreground">{t('home.preview.assessments')}</p>
                 </div>
                 <div>
                   <p className="text-lg font-semibold">2</p>
-                  <p className="text-[10px] uppercase tracking-wide text-muted-foreground">Certificates</p>
+                  <p className="text-[10px] uppercase tracking-wide text-muted-foreground">{t('home.preview.certificates')}</p>
                 </div>
               </div>
             </div>
-            <div className="absolute -bottom-6 -left-6 hidden rounded-xl border bg-card p-3 shadow-[var(--shadow-elevated)] sm:block">
+            <div className="absolute -bottom-6 -start-6 hidden rounded-xl border bg-card p-3 shadow-[var(--shadow-elevated)] sm:block">
               <div className="flex items-center gap-2.5">
                 <span className="flex size-8 items-center justify-center rounded-full bg-emerald-500/10 text-emerald-600">
                   <Award className="size-4" />
                 </span>
                 <div>
-                  <p className="text-xs font-semibold">Certificate verified</p>
-                  <p className="text-[10px] text-muted-foreground">Public verification code</p>
+                  <p className="text-xs font-semibold">{t('home.preview.verified')}</p>
+                  <p className="text-[10px] text-muted-foreground">{t('home.preview.verifiedHint')}</p>
                 </div>
               </div>
             </div>
@@ -146,9 +146,7 @@ export default async function HomePage() {
       {organizations.length ? (
         <section className="border-b bg-muted/20">
           <div className="mx-auto flex max-w-6xl flex-col items-center gap-4 px-4 py-8 sm:px-6 md:flex-row md:justify-between">
-            <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
-              Learning spaces powered by Lumina
-            </p>
+            <p className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">{t('home.orgs')}</p>
             <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3">
               {organizations.map((organization) => (
                 <span key={organization.id} className="text-sm font-semibold tracking-tight text-foreground/60">
@@ -163,16 +161,13 @@ export default async function HomePage() {
       <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:py-20">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-primary">Course catalog</p>
-            <h2 className="mt-2 text-2xl font-semibold tracking-tight sm:text-3xl">Start with a course that matters</h2>
-            <p className="mt-2 max-w-xl text-sm text-muted-foreground">
-              Every course is structured into modules, lessons and assessments, with clear progress from first lesson to
-              certificate.
-            </p>
+            <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-primary">{t('home.catalog.eyebrow')}</p>
+            <h2 className="mt-2 text-2xl font-semibold tracking-tight sm:text-3xl">{t('home.catalog.title')}</h2>
+            <p className="mt-2 max-w-xl text-sm text-muted-foreground">{t('home.catalog.body')}</p>
           </div>
           <Button asChild variant="outline">
             <Link href="/courses">
-              Browse all courses <ArrowRight />
+              {t('home.catalog.browseAll')} <ArrowRight className="rtl:rotate-180" />
             </Link>
           </Button>
         </div>
@@ -186,8 +181,8 @@ export default async function HomePage() {
         ) : (
           <div className="mt-8 rounded-xl border border-dashed bg-muted/20 p-10 text-center">
             <BookOpenCheck className="mx-auto size-6 text-muted-foreground" />
-            <p className="mt-3 text-sm font-medium">The catalog is being prepared</p>
-            <p className="mt-1 text-sm text-muted-foreground">Published courses will appear here as organizations go live.</p>
+            <p className="mt-3 text-sm font-medium">{t('home.catalog.emptyTitle')}</p>
+            <p className="mt-1 text-sm text-muted-foreground">{t('home.catalog.emptyBody')}</p>
           </div>
         )}
 
@@ -211,31 +206,29 @@ export default async function HomePage() {
       <section className="border-y bg-muted/20">
         <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:py-20">
           <div className="max-w-2xl">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-primary">One platform, three workspaces</p>
-            <h2 className="mt-2 text-2xl font-semibold tracking-tight sm:text-3xl">Purpose-built for every role</h2>
-            <p className="mt-2 text-sm text-muted-foreground">
-              Separate dashboards, permissions and workflows — connected by a single, secure data model.
-            </p>
+            <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-primary">{t('home.roles.eyebrow')}</p>
+            <h2 className="mt-2 text-2xl font-semibold tracking-tight sm:text-3xl">{t('home.roles.title')}</h2>
+            <p className="mt-2 text-sm text-muted-foreground">{t('home.roles.body')}</p>
           </div>
           <div className="mt-8 grid gap-5 md:grid-cols-3">
             {[
               {
                 icon: ShieldCheck,
-                title: 'Administrators',
-                copy: 'Manage users, organizations, instructors, enrollments and platform analytics with tenant-isolated oversight.',
-                points: ['Role & access management', 'Organization branding', 'Platform-wide reporting'],
+                title: t('home.roles.admins'),
+                copy: t('home.roles.adminsCopy'),
+                points: [t('home.roles.adminsP1'), t('home.roles.adminsP2'), t('home.roles.adminsP3')],
               },
               {
                 icon: Layers,
-                title: 'Instructors',
-                copy: 'Build structured courses, author lessons and assessments, review submissions and follow learner progress.',
-                points: ['Sections, lessons & resources', 'Quiz and assignment builder', 'Grading workflow'],
+                title: t('home.roles.instructors'),
+                copy: t('home.roles.instructorsCopy'),
+                points: [t('home.roles.instructorsP1'), t('home.roles.instructorsP2'), t('home.roles.instructorsP3')],
               },
               {
                 icon: GraduationCap,
-                title: 'Students',
-                copy: 'Learn in a focused interface, track progress, take assessments and earn verifiable certificates.',
-                points: ['Guided course player', 'Assignments & feedback', 'Certificates & verification'],
+                title: t('home.roles.students'),
+                copy: t('home.roles.studentsCopy'),
+                points: [t('home.roles.studentsP1'), t('home.roles.studentsP2'), t('home.roles.studentsP3')],
               },
             ].map((role) => (
               <div key={role.title} className="rounded-xl border bg-card p-5 shadow-[var(--shadow-card)]">
@@ -247,7 +240,7 @@ export default async function HomePage() {
                 <ul className="mt-4 space-y-2 text-sm">
                   {role.points.map((point) => (
                     <li key={point} className="flex items-center gap-2 text-muted-foreground">
-                      <CheckCircle2 className="size-3.5 text-emerald-500" /> {point}
+                      <CheckCircle2 className="size-3.5 shrink-0 text-emerald-500" /> {point}
                     </li>
                   ))}
                 </ul>
@@ -260,21 +253,18 @@ export default async function HomePage() {
       <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:py-20">
         <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
           <div>
-            <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-primary">Platform capabilities</p>
-            <h2 className="mt-2 text-2xl font-semibold tracking-tight sm:text-3xl">Everything the learning lifecycle needs</h2>
-            <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-              Not a collection of disconnected tools. Courses, lessons, assessments and records share the same
-              authorization model and database — so reporting and progress stay trustworthy.
-            </p>
+            <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-primary">{t('home.features.eyebrow')}</p>
+            <h2 className="mt-2 text-2xl font-semibold tracking-tight sm:text-3xl">{t('home.features.title')}</h2>
+            <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{t('home.features.body')}</p>
           </div>
           <div className="grid gap-4 sm:grid-cols-2">
             {[
-              { icon: Layers, title: 'Structured courses', copy: 'Sections, ordered lessons, resources and publishing controls.' },
-              { icon: ClipboardCheck, title: 'Assessment engine', copy: 'Quizzes with four question types, attempts, timing and server grading.' },
-              { icon: BarChart3, title: 'Progress analytics', copy: 'Enrollment trends, completion rates and learner engagement.' },
-              { icon: Award, title: 'Certificates', copy: 'Automatic issuance with unique public verification codes.' },
-              { icon: Users, title: 'Multi-organization', copy: 'Tenant isolation enforced by Postgres row-level security.' },
-              { icon: ShieldCheck, title: 'Secure by design', copy: 'Role checks at every layer, private files and audit trails.' },
+              { icon: Layers, title: t('home.features.courses'), copy: t('home.features.coursesCopy') },
+              { icon: ClipboardCheck, title: t('home.features.assessment'), copy: t('home.features.assessmentCopy') },
+              { icon: BarChart3, title: t('home.features.analytics'), copy: t('home.features.analyticsCopy') },
+              { icon: Award, title: t('home.features.certificates'), copy: t('home.features.certificatesCopy') },
+              { icon: Users, title: t('home.features.multi'), copy: t('home.features.multiCopy') },
+              { icon: ShieldCheck, title: t('home.features.secure'), copy: t('home.features.secureCopy') },
             ].map((feature) => (
               <div key={feature.title} className="rounded-xl border bg-card p-4">
                 <feature.icon className="size-4 text-primary" />
@@ -289,23 +279,18 @@ export default async function HomePage() {
       <section id="for-organizations" className="border-t bg-[oklch(0.2_0.04_277)] text-white">
         <div className="mx-auto flex max-w-6xl flex-col items-start justify-between gap-8 px-4 py-16 sm:px-6 lg:flex-row lg:items-center lg:py-20">
           <div className="max-w-2xl">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-white/60">For organizations</p>
-            <h2 className="mt-2 text-2xl font-semibold tracking-tight text-balance sm:text-3xl">
-              Give every team a learning space they can trust.
-            </h2>
-            <p className="mt-3 text-sm leading-relaxed text-white/65">
-              Onboard instructors, publish structured programs, monitor completion and issue certificates — all within
-              your own organization boundary.
-            </p>
+            <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-white/60">{t('home.cta.eyebrow')}</p>
+            <h2 className="mt-2 text-2xl font-semibold tracking-tight text-balance sm:text-3xl">{t('home.cta.title')}</h2>
+            <p className="mt-3 text-sm leading-relaxed text-white/65">{t('home.cta.body')}</p>
           </div>
           <div className="flex flex-wrap gap-3">
             <Button asChild size="lg" className="bg-white text-slate-900 hover:bg-white/90">
               <Link href="/register">
-                Get started <ArrowRight />
+                {t('home.cta.getStarted')} <ArrowRight className="rtl:rotate-180" />
               </Link>
             </Button>
             <Button asChild size="lg" variant="outline" className="border-white/25 bg-transparent text-white hover:bg-white/10 hover:text-white">
-              <Link href="/verify">Verify a certificate</Link>
+              <Link href="/verify">{t('home.cta.verify')}</Link>
             </Button>
           </div>
         </div>

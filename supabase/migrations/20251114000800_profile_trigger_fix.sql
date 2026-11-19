@@ -1,5 +1,5 @@
 -- =============================================================================
--- Lumina LMS — allow trusted auth triggers to update derived profile fields.
+-- Learnova LMS — allow trusted auth triggers to update derived profile fields.
 --
 -- The auth service updates auth.users after signup/confirmation. That fires
 -- handle_user_confirmed(), which needs to set profiles.email_verified. The
@@ -15,7 +15,7 @@ set search_path = ''
 as $$
 begin
   if auth.role() = 'service_role'
-     or current_setting('lumina.system_update', true) = 'on' then
+     or current_setting('learnova.system_update', true) = 'on' then
     return new;
   end if;
 
@@ -43,11 +43,11 @@ begin
   if new.email_confirmed_at is not null then
     -- The guard is an invoker trigger; mark this transaction as a trusted
     -- auth-driven update so the derived flag can be written.
-    perform set_config('lumina.system_update', 'on', true);
+    perform set_config('learnova.system_update', 'on', true);
     update public.profiles
       set email_verified = true
       where id = new.id and email_verified = false;
-    perform set_config('lumina.system_update', 'off', true);
+    perform set_config('learnova.system_update', 'off', true);
   end if;
   return new;
 end;

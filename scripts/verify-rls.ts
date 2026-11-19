@@ -1,5 +1,5 @@
 /**
- * Lumina LMS — live Row Level Security verification.
+ * Learnova LMS — live Row Level Security verification.
  *
  * Requires a running local Supabase with seeded data (`npm run db:reset` then
  * `npm run db:seed`). Every check signs in as a real demo account and exercises
@@ -100,7 +100,7 @@ async function fixture<Q extends FixtureQuery>(label: string, query: Q): Promise
 
 async function main() {
   const [
-    luminaOrg,
+    learnovaOrg,
     northstarOrg,
     _designCourse,
     reactCourse,
@@ -120,7 +120,7 @@ async function main() {
     previewLesson,
     researchLesson,
   ] = await Promise.all([
-    fixture('lumina org', admin.from('organizations').select('id,name').eq('slug', 'lumina-academy').single()),
+    fixture('learnova org', admin.from('organizations').select('id,name').eq('slug', 'learnova-academy').single()),
     fixture('northstar org', admin.from('organizations').select('id,name').eq('slug', 'northstar-institute').single()),
     fixture(
       'design course',
@@ -178,8 +178,8 @@ async function main() {
       'demo certificate',
       admin.from('certificates').select('id,code,student_id').eq('code', 'LUM-A1B2C3D4E5F6').single(),
     ),
-    fixture('amara profile', admin.from('profiles').select('id,email,full_name,role').eq('email', 'student@lumina.test').single()),
-    fixture('diego profile', admin.from('profiles').select('id,email,full_name,role').eq('email', 'diego@lumina.test').single()),
+    fixture('amara profile', admin.from('profiles').select('id,email,full_name,role').eq('email', 'student@learnova.test').single()),
+    fixture('diego profile', admin.from('profiles').select('id,email,full_name,role').eq('email', 'diego@learnova.test').single()),
     fixture('noah profile', admin.from('profiles').select('id,email,full_name,role').eq('email', 'student@northstar.test').single()),
     fixture(
       'design non-preview lesson',
@@ -195,18 +195,18 @@ async function main() {
     ),
   ]);
 
-  assert(luminaOrg.id !== northstarOrg.id, 'fixtures must come from distinct organizations');
+  assert(learnovaOrg.id !== northstarOrg.id, 'fixtures must come from distinct organizations');
 
   console.log('\nSigning in demo accounts…');
   const [anon, amara, diego, maya, leo, priya, marcus, sage, noah] = await Promise.all([
     Promise.resolve(makeClient()),
-    signIn('student@lumina.test'),
-    signIn('diego@lumina.test'),
-    signIn('maya@lumina.test'),
-    signIn('leo@lumina.test'),
-    signIn('admin@lumina.test'),
+    signIn('student@learnova.test'),
+    signIn('diego@learnova.test'),
+    signIn('maya@learnova.test'),
+    signIn('leo@learnova.test'),
+    signIn('admin@learnova.test'),
     signIn('admin@northstar.test'),
-    signIn('super@lumina.test'),
+    signIn('super@learnova.test'),
     signIn('student@northstar.test'),
   ]);
 
@@ -372,7 +372,7 @@ async function main() {
     assertZero(await leo.from('assignment_submissions').select('id').eq('assignment_id', designAssignment.id), 'foreign submissions');
   });
   await check('instructor cannot change their own role', async () => {
-    const mayaProfile = await fixture('maya profile', admin.from('profiles').select('id').eq('email', 'maya@lumina.test').single());
+    const mayaProfile = await fixture('maya profile', admin.from('profiles').select('id').eq('email', 'maya@learnova.test').single());
     const { error } = await maya.from('profiles').update({ role: 'org_admin' }).eq('id', mayaProfile.id);
     assert(error, 'instructor role escalation should be blocked');
   });
@@ -387,7 +387,7 @@ async function main() {
     await admin.from('instructor_requests').delete().eq('user_id', diegoProfile.id);
     const result = await diego
       .from('instructor_requests')
-      .insert({ user_id: diegoProfile.id, org_id: luminaOrg.id, status: 'pending', message: 'RLS verification request' })
+      .insert({ user_id: diegoProfile.id, org_id: learnovaOrg.id, status: 'pending', message: 'RLS verification request' })
       .select('id,status')
       .single();
     assertNoError(result.error, 'own instructor request');
@@ -425,7 +425,7 @@ async function main() {
   await check('student cannot create a pre-approved instructor request', async () => {
     const result = await amara.from('instructor_requests').insert({
       user_id: amaraProfile.id,
-      org_id: luminaOrg.id,
+      org_id: learnovaOrg.id,
       status: 'approved',
     });
     assertError(result, 'pre-approved instructor request', 'row-level security');
@@ -438,7 +438,7 @@ async function main() {
 
   console.log('\nAdministrator tenancy boundaries');
   await check('org admin only sees profiles from their organization', async () => {
-    assertSome(await priya.from('profiles').select('id,email').eq('default_org_id', luminaOrg.id), 'own org profiles', 6);
+    assertSome(await priya.from('profiles').select('id,email').eq('default_org_id', learnovaOrg.id), 'own org profiles', 6);
     assertZero(await priya.from('profiles').select('id').eq('id', noahProfile.id), 'foreign org profile');
   });
   await check('org admin cannot modify another organization course', async () => {
@@ -451,7 +451,7 @@ async function main() {
     assert((data ?? []).length === 0, 'foreign course must not be updatable');
   });
   await check('org admin cannot promote themselves without the service role', async () => {
-    const priyaProfile = await fixture('priya profile', admin.from('profiles').select('id').eq('email', 'admin@lumina.test').single());
+    const priyaProfile = await fixture('priya profile', admin.from('profiles').select('id').eq('email', 'admin@learnova.test').single());
     const { error } = await priya.from('profiles').update({ role: 'super_admin' }).eq('id', priyaProfile.id);
     assert(error, 'admin role escalation should be blocked');
   });
@@ -462,7 +462,7 @@ async function main() {
     const courses = await sage.from('courses').select('id,org_id,status');
     assertNoError(courses.error, 'super admin courses');
     const orgIds = new Set((courses.data ?? []).map((row) => row.org_id));
-    assert(orgIds.has(luminaOrg.id) && orgIds.has(northstarOrg.id), 'super admin should see both tenants');
+    assert(orgIds.has(learnovaOrg.id) && orgIds.has(northstarOrg.id), 'super admin should see both tenants');
     const questions = await sage.from('questions').select('id,quiz_id');
     assertNoError(questions.error, 'super admin questions');
     assert((questions.data?.length ?? 0) >= 10, 'super admin should see question banks');

@@ -3,8 +3,8 @@ import { expect, test } from '@playwright/test';
 test.describe('public surfaces', () => {
   test('landing page renders', async ({ page }) => {
     await page.goto('/');
-    await expect(page.getByRole('link', { name: /lumina/i }).first()).toBeVisible();
-    await expect(page).toHaveTitle(/lumina/i);
+    await expect(page.getByRole('link', { name: /learnova/i }).first()).toBeVisible();
+    await expect(page).toHaveTitle(/learnova/i);
   });
 
   test('catalog lists courses', async ({ page }) => {
@@ -51,7 +51,7 @@ test.describe('auth guards', () => {
 test.describe('authenticated dashboards', () => {
   test('organization admin lands on the admin dashboard', async ({ page }) => {
     await page.goto('/login');
-    await page.getByLabel(/email/i).fill('admin@lumina.test');
+    await page.getByLabel(/email/i).fill('admin@learnova.test');
     await page.getByLabel(/password/i).fill('Passw0rd!');
     await page.getByRole('button', { name: /sign in/i }).click();
     await expect(page).toHaveURL(/\/admin$/);
@@ -60,7 +60,7 @@ test.describe('authenticated dashboards', () => {
 
   test('student lands on the student dashboard', async ({ page }) => {
     await page.goto('/login');
-    await page.getByLabel(/email/i).fill('student@lumina.test');
+    await page.getByLabel(/email/i).fill('student@learnova.test');
     await page.getByLabel(/password/i).fill('Passw0rd!');
     await page.getByRole('button', { name: /sign in/i }).click();
     await expect(page).toHaveURL(/\/student$/);
@@ -80,18 +80,18 @@ test.describe('teaching access and platform ownership', () => {
 
   test('student can open the instructor request page', async ({ page }) => {
     await page.goto('/login');
-    await page.getByLabel(/email/i).fill('student@lumina.test');
+    await page.getByLabel(/email/i).fill('student@learnova.test');
     await page.getByLabel(/password/i).fill('Passw0rd!');
     await page.getByRole('button', { name: /sign in/i }).click();
     await expect(page).toHaveURL(/\/student$/);
     await page.goto('/student/become-instructor');
-    await expect(page.getByRole('heading', { level: 1, name: /teach on lumina/i })).toBeVisible();
+    await expect(page.getByRole('heading', { level: 1, name: /teach on learnova/i })).toBeVisible();
     await expect(page.getByRole('button', { name: /request instructor access/i })).toBeVisible();
   });
 
   test('super admin gets platform insights and access management', async ({ page }) => {
     await page.goto('/login');
-    await page.getByLabel(/email/i).fill('super@lumina.test');
+    await page.getByLabel(/email/i).fill('super@learnova.test');
     await page.getByLabel(/password/i).fill('Passw0rd!');
     await page.getByRole('button', { name: /sign in/i }).click();
     await expect(page).toHaveURL(/\/admin$/);
@@ -103,7 +103,7 @@ test.describe('teaching access and platform ownership', () => {
 
   test('organization admin cannot open the platform owner page', async ({ page }) => {
     await page.goto('/login');
-    await page.getByLabel(/email/i).fill('admin@lumina.test');
+    await page.getByLabel(/email/i).fill('admin@learnova.test');
     await page.getByLabel(/password/i).fill('Passw0rd!');
     await page.getByRole('button', { name: /sign in/i }).click();
     await expect(page).toHaveURL(/\/admin$/);

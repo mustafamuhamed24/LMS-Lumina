@@ -1,4 +1,4 @@
-# Lumina LMS — Project Architecture
+# Learnova LMS — Project Architecture
 
 > Last updated: 2026-11-15
 >

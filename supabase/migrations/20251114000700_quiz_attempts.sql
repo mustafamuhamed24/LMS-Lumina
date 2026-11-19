@@ -1,5 +1,5 @@
 -- =============================================================================
--- Lumina LMS — secure quiz attempt lifecycle
+-- Learnova LMS — secure quiz attempt lifecycle
 -- Learners never read questions, options or answer keys directly. These
 -- security-definer functions expose sanitized questions, enforce enrollment and
 -- attempt limits, and grade submissions entirely on the server.

@@ -1,12 +1,13 @@
-# Deploying Lumina LMS
+# Deploying Learnova LMS
+
+**Developer:** Mustafa Muhamed
 
 This guide covers a production deployment on Vercel with a hosted Supabase project:
-environment variables, the platform-owner account, confirmation emails sent from your own
-domain, and the settings that make confirmation links return to the deployed app instead of
-`localhost`.
+environment variables, the platform-owner account, instant verification-free signup, and the
+settings that make reset and invitation links return to the deployed app instead of `localhost`.
 
 > **Vercel does not send authentication email.** Supabase Auth sends signup and password-reset
-> messages. To make them come from Lumina rather than a shared Supabase mailer, configure custom
+> messages. To make them come from Learnova rather than a shared Supabase mailer, configure custom
 > SMTP and the branded templates in this repository.
 
 ## 1. What runs where
@@ -38,12 +39,11 @@ NEXT_PUBLIC_SUPABASE_URL=https://YOUR-PROJECT-REF.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=...
 SUPABASE_SERVICE_ROLE_KEY=...
 NEXT_PUBLIC_APP_URL=https://your-domain.com
-AUTO_CONFIRM_SIGNUPS=false
 ```
 
-`NEXT_PUBLIC_APP_URL` is not cosmetic: it is the origin used for confirmation, invitation and
-password-reset links. If it is missing or still points at `localhost`, the app falls back to the
-incoming request host, but the Supabase redirect allow-list must still contain the deployed domain.
+`NEXT_PUBLIC_APP_URL` is not cosmetic: it is the origin used for invitation and password-reset
+links. If it is missing or still points at `localhost`, the app falls back to the incoming request
+host, but the Supabase redirect allow-list must still contain the deployed domain.
 
 ## 3. Platform owner login
 
@@ -81,7 +81,7 @@ If the password is unknown, use one of these recovery paths:
 ### Create a new owner
 
 ```bash
-npm run admin:create -- owner@example.com "Platform Owner" "S3curePass!" lumina-academy
+npm run admin:create -- owner@example.com "Platform Owner" "S3curePass!" learnova-academy
 ```
 
 - Password and organization slug are optional.
@@ -134,9 +134,9 @@ The app's callback accepts both styles:
 - `?code=...` from the default Supabase confirmation URL (same browser).
 - `?token_hash=...&type=signup|recovery|...` from the branded templates (works across devices).
 
-After a successful signup confirmation the callback sends the person to `/login?confirmed=1` and
-shows **“Your email is confirmed. Sign in to open your Lumina workspace.”** If the browser already
-has a session, the middleware sends them straight to their dashboard.
+The callback handles recovery and invitation links; signup does not need it because accounts are
+confirmed server-side and signed in immediately. If a session is present, the middleware sends the
+person straight to their dashboard; password recovery links land on `/reset-password`.
 
 ## 6. Send email from your own domain
 
@@ -177,7 +177,7 @@ In **Supabase Dashboard → Authentication → Emails → SMTP Settings**:
 | Username | Provider username |
 | Password | Provider API key / SMTP password |
 | Sender email | `no-reply@your-domain.com` |
-| Sender name | `Lumina LMS` |
+| Sender name | `Learnova LMS` |
 
 Send a test email from the dashboard before continuing. Check the message source: the `From`
 header should be your domain, and SPF/DKIM should pass.
@@ -188,11 +188,11 @@ The HTML lives in [`supabase/templates/`](supabase/templates):
 
 | Template | File | Subject |
 | --- | --- | --- |
-| Confirm signup | `confirmation.html` | Confirm your Lumina LMS account |
-| Reset password | `recovery.html` | Reset your Lumina LMS password |
-| Magic link | `magic_link.html` | Your Lumina LMS sign-in link |
-| Invite | `invite.html` | You are invited to Lumina LMS |
-| Change email | `email_change.html` | Confirm your new Lumina LMS email |
+| Confirm signup | `confirmation.html` | Confirm your Learnova LMS account |
+| Reset password | `recovery.html` | Reset your Learnova LMS password |
+| Magic link | `magic_link.html` | Your Learnova LMS sign-in link |
+| Invite | `invite.html` | You are invited to Learnova LMS |
+| Change email | `email_change.html` | Confirm your new Learnova LMS email |
 
 Local Supabase reads them through `supabase/config.toml`. For the hosted project, open
 **Authentication → Emails → Templates**, paste each file's contents into the matching template,
@@ -202,42 +202,28 @@ which is what makes confirmation work when the email is opened on a different de
 > Keep `{{ .RedirectTo }}` and `{{ .TokenHash }}` intact when editing. They are Supabase template
 > variables, not placeholders to replace manually.
 
-## 7. Choose the confirmation behavior
+## 7. Signup behavior — instant access, no verification
 
-### Option A — Confirm email, then sign in (recommended)
+Learnova confirms new accounts on the server and signs the person in immediately, so there is no
+confirmation email to wait for and no verification step.
 
-**Authentication → Sign In / Providers → Email → Confirm email: ON.**
+- `/register` creates the auth user, confirms it with the service role, opens a session and sends
+  the person straight to their workspace with a welcome popup.
+- Sign-in also recovers older unconfirmed accounts: if Supabase reports `email not confirmed`, the
+  server confirms the account once and retries the sign-in.
+- Local and hosted environments behave the same way, regardless of the **Confirm email** toggle in
+  **Authentication → Sign In / Providers → Email**.
 
-- New accounts receive the branded confirmation message.
-- Clicking the link confirms the address and returns to Lumina.
-- If the browser has the session, the person lands in their dashboard. Otherwise `/login` shows
-  the confirmation notice.
+Because email ownership is not verified, treat this mode as trust-on-first-use: anyone can register
+with an address they do not own. Keep it for internal, demo or managed deployments, and switch back
+to Supabase's confirmation flow if you need verified addresses.
 
-This proves the person owns the address and is the right default for a public platform.
-
-### Option B — Instant login, no confirmation email
-
-**Confirm email: OFF.**
-
-Supabase marks new users confirmed immediately and the app redirects them into the workspace after
-signup. No message is sent. This is convenient for a closed demo but allows anyone to register with
-an address they do not own.
-
-Local development already runs this way (`enable_confirmations = false` in `supabase/config.toml`).
-
-### Option C — Server-side auto-confirm (`AUTO_CONFIRM_SIGNUPS`)
-
-Set `AUTO_CONFIRM_SIGNUPS=true` in the host environment. After Supabase creates the user, the server
-confirms the account with the service role and signs the person in. This bypasses email delivery
-entirely while keeping “Confirm email” enabled for every other flow.
-
-Treat this as a demo switch: email ownership is not verified. Leave it `false` for public use.
 
 ## 8. Deploy on Vercel
 
 1. Import the repository into Vercel.
 2. Framework preset: **Next.js**. Build command: `npm run build`. Install command: `npm install`.
-3. Add the four required variables (and `AUTO_CONFIRM_SIGNUPS` if used) to **Production**.
+3. Add the four required variables to **Production**.
 4. Set `NEXT_PUBLIC_APP_URL` to the final domain, including `https://`, with no trailing slash.
 5. Deploy.
 6. Add the same domain to Supabase **Site URL** and **Redirect URLs**, then redeploy if you changed
@@ -252,9 +238,8 @@ Treat this as a demo switch: email ownership is not verified. Leave it `false` f
 
 ## 9. Post-deploy smoke test
 
-- [ ] `/register` creates an account and the confirmation email arrives from your domain.
-- [ ] The confirmation link opens `https://your-domain.com`, not `localhost`.
-- [ ] After confirmation, `/login` shows the confirmed notice and sign-in works.
+- [ ] `/register` creates an account and lands in the workspace immediately with the welcome popup.
+- [ ] Signing out and back in with the same credentials works without a verification step.
 - [ ] `/forgot-password` delivers a reset link that returns to `/reset-password`.
 - [ ] The owner can open `/admin/platform`; an org admin is redirected to `/admin`.
 - [ ] A student can enroll, complete a lesson and download a certificate.
@@ -268,11 +253,9 @@ Treat this as a demo switch: email ownership is not verified. Leave it `false` f
 | --- | --- | --- |
 | Confirmation link points at `localhost` | `NEXT_PUBLIC_APP_URL` was local at build time | Set the deployed URL in the host and redeploy |
 | Link opens the Supabase site or an error page | Redirect URL missing from the allow-list | Add `https://your-domain.com/auth/callback` |
-| No confirmation email | Custom SMTP not enabled, or rate limit reached | Configure SMTP, send a test, check Supabase Auth logs |
+| No reset email | Custom SMTP not enabled, or rate limit reached | Configure SMTP, send a test, check Supabase Auth logs |
 | Mail lands in spam | SPF/DKIM/DMARC not aligned | Verify DNS records and the `From` domain |
 | Email says “Supabase Auth” | Dashboard templates not updated | Paste the files from `supabase/templates/` |
-| “Email not confirmed” on login | Confirmations are on and the link was not used | Resend from `/register` or confirm the user in the dashboard |
-| Confirmation works only in the original browser | Default `ConfirmationURL` (PKCE code) is in use | Apply the branded templates that use `token_hash` |
 | Owner cannot open `/admin/platform` | Profile role is not `super_admin` | Run `npm run admin:create` or edit the role as a super admin |
 | Password reset email never arrives | SMTP missing or the address has no account | Configure SMTP; the response is intentionally generic |
 | Build fails with an invalid public env | A variable is missing or malformed | Check `NEXT_PUBLIC_SUPABASE_URL`, anon key and app URL |
@@ -282,6 +265,7 @@ Treat this as a demo switch: email ownership is not verified. Leave it `false` f
 - Keep `SUPABASE_SERVICE_ROLE_KEY` server-only; never prefix it with `NEXT_PUBLIC_`.
 - Rotate the owner password after the first sign-in and keep the super-admin group small.
 - Use organization admins for day-to-day tenant work.
-- Leave `AUTO_CONFIRM_SIGNUPS=false` for public deployments.
+- Signups are trusted on first use: accounts are confirmed server-side and signed in immediately, so
+  email ownership is not proven. Use verified email if you later need that guarantee.
 - Review **Authentication → Users**, the activity log and pending instructor requests regularly.
 - Back up the database and test a restore before you need it.
