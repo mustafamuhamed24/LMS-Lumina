@@ -88,7 +88,7 @@ const studentNav: NavGroup[] = [
     items: [
       { label: 'Notifications', href: '/student/notifications', icon: Bell },
       { label: 'Profile', href: '/student/profile', icon: UserRound },
-      { label: 'Teach on Lumina', href: '/student/become-instructor', icon: BookOpen },
+      { label: 'Teach on Learnova', href: '/student/become-instructor', icon: BookOpen },
       { label: 'Browse catalog', href: '/courses', icon: GraduationCap },
     ],
   },

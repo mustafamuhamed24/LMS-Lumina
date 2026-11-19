@@ -18,7 +18,7 @@ export function AuthShell({
           <span className="flex size-9 items-center justify-center rounded-lg bg-white/10 backdrop-blur">
             <GraduationCap className="size-5" />
           </span>
-          Lumina LMS
+          Learnova LMS
         </Link>
         <div className="relative space-y-8">
           <div>
@@ -29,7 +29,7 @@ export function AuthShell({
               One calm place for learning, teaching and progress.
             </h1>
             <p className="mt-4 max-w-md text-sm leading-relaxed text-white/70">
-              Lumina brings courses, assessments, feedback and certification together for modern learning organizations.
+              Learnova brings courses, assessments, feedback and certification together for modern learning organizations.
             </p>
           </div>
           <ul className="space-y-3 text-sm text-white/75">
@@ -44,13 +44,13 @@ export function AuthShell({
             </li>
           </ul>
         </div>
-        <p className="relative text-xs text-white/50">© {new Date().getFullYear()} Lumina LMS</p>
+        <p className="relative text-xs text-white/50">© {new Date().getFullYear()} Learnova LMS</p>
       </aside>
 
       <main className="flex items-center justify-center px-4 py-12 sm:px-8">
         <div className="w-full max-w-sm">
           <Link href="/" className="mb-8 inline-flex items-center gap-2 text-sm font-medium text-muted-foreground lg:hidden">
-            <GraduationCap className="size-5 text-primary" /> Lumina LMS
+            <GraduationCap className="size-5 text-primary" /> Learnova LMS
           </Link>
           <div className="mb-7">
             <h2 className="text-2xl font-semibold tracking-tight">{title}</h2>

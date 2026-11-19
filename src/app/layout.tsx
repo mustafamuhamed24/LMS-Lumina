@@ -4,15 +4,15 @@ import { Providers } from '@/components/providers';
 
 export const metadata: Metadata = {
   title: {
-    default: 'Lumina LMS — Knowledge, structured.',
-    template: '%s · Lumina LMS',
+    default: 'Learnova LMS — Knowledge, structured.',
+    template: '%s · Learnova LMS',
   },
   description:
-    'Lumina is a modern learning management system for organizations, instructors and learners — courses, assessments, progress and certificates in one place.',
-  applicationName: 'Lumina LMS',
-  authors: [{ name: 'Lumina' }],
+    'Learnova is a modern learning management system for organizations, instructors and learners — courses, assessments, progress and certificates in one place.',
+  applicationName: 'Learnova LMS',
+  authors: [{ name: 'Learnova' }],
   openGraph: {
-    title: 'Lumina LMS',
+    title: 'Learnova LMS',
     description: 'A modern, organization-ready learning platform.',
     type: 'website',
   },

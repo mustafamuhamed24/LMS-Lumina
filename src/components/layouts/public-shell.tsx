@@ -12,7 +12,7 @@ export function Brand({ href = '/', compact = false }: { href?: string; compact?
       </span>
       {!compact ? (
         <span className="flex flex-col leading-none">
-          <span className="text-[15px] font-semibold tracking-tight">Lumina</span>
+          <span className="text-[15px] font-semibold tracking-tight">Learnova</span>
           <span className="mt-0.5 text-[10px] font-medium uppercase tracking-[0.14em] text-muted-foreground">Learning platform</span>
         </span>
       ) : null}
