@@ -218,6 +218,9 @@ const en = {
   'video.unsupported': 'Your browser does not support embedded video.',
   'video.secureTitle': 'Protected content',
   'video.secureBody': 'This video is watermarked and cannot be downloaded. Screen recording is not permitted.',
+
+  'signup.welcomeTitle': 'Welcome to Learnova',
+  'signup.welcomeBody': 'Your account is ready — no email verification needed.',
 } as const;
 
 export type MessageKey = keyof typeof en;
@@ -435,6 +438,9 @@ const ar: Record<MessageKey, string> = {
   'video.unsupported': 'متصفحك لا يدعم الفيديو المضمّن.',
   'video.secureTitle': 'محتوى محمي',
   'video.secureBody': 'هذا الفيديو يحمل علامة مائية ولا يمكن تنزيله. تسجيل الشاشة غير مسموح.',
+
+  'signup.welcomeTitle': 'مرحبًا بك في Learnova',
+  'signup.welcomeBody': 'حسابك جاهز — لا حاجة لتأكيد البريد الإلكتروني.',
 };
 
 export const messages: Record<'en' | 'ar', Record<MessageKey, string>> = { en, ar };

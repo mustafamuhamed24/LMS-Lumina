@@ -51,6 +51,9 @@ certificates with public verification, notifications and real database-driven an
 - **Certificates** — automatic issuance at completion, public verification and server-generated PDFs.
 - **Operations** — typed Supabase schema, migrations, idempotent demo seed, live RLS checks,
   unit tests and Playwright journeys.
+- **Bilingual interface** — English and Arabic with a right-to-left layout, persisted per visitor.
+- **Support everywhere** — a floating button that opens WhatsApp or email from any page.
+- **Protected lessons** — course videos are watermarked and hardened against casual copying.
 
 ## Tech stack
 
@@ -95,6 +98,8 @@ Copy the values printed by `npx supabase status` into `.env.local`:
 | `SUPABASE_SERVICE_ROLE_KEY` | Server-only key; never expose it to the browser |
 | `NEXT_PUBLIC_APP_URL` | Canonical app URL, usually `http://localhost:3000` |
 | `SEED_PASSWORD` | Optional demo password, defaults to `Passw0rd!` |
+| `NEXT_PUBLIC_SUPPORT_EMAIL` | Optional fallback address for the floating support button |
+| `NEXT_PUBLIC_SUPPORT_WHATSAPP` | Optional WhatsApp number, international format (`201234567890`) |
 
 Local services:
 
@@ -241,6 +246,23 @@ Prefer `npm run admin:create`; it exercises the same service-role path the appli
 - Quizzes with timers and attempt history; assignment submissions with files and feedback.
 - Certificates with PDF download and a public `/verify` page.
 - Notifications, profile management, and **Teach on Learnova** to request instructor access.
+
+### Language, support and protected video
+
+- **Language.** A language switch in the public header, the auth screens, the register page and the
+  dashboard header toggles English/Arabic. The choice is stored in the `learnova_locale` cookie and
+  applied as `lang`/`dir` on `<html>`, so Arabic renders right-to-left. Translated surfaces are the
+  landing page, auth and registration, public header/footer, dashboard navigation and shell, the
+  support widget and the video player notice. Inner dashboard pages still use English copy.
+- **Support button.** A floating button is mounted on every page and opens a small panel with an
+  email link and a WhatsApp link. The platform owner edits both in **Admin → Settings** (stored in
+  `platform_settings`); `NEXT_PUBLIC_SUPPORT_EMAIL` and `NEXT_PUBLIC_SUPPORT_WHATSAPP` are only
+  fallbacks. The WhatsApp tile is hidden when the number is empty.
+- **Protected video.** Lesson videos carry a tiled watermark of the viewer's email, block the
+  context menu, dragging and save/print shortcuts, hide the download and picture-in-picture
+  controls, and remove fullscreen from embeds. Direct video files also pause and blur when the tab
+  or window loses focus. This is deterrence: browsers cannot prevent operating-system or hardware
+  screen recording, so the watermark is the traceability layer.
 
 ## Routes
 

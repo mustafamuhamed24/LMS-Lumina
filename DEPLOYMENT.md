@@ -39,6 +39,10 @@ NEXT_PUBLIC_SUPABASE_URL=https://YOUR-PROJECT-REF.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=...
 SUPABASE_SERVICE_ROLE_KEY=...
 NEXT_PUBLIC_APP_URL=https://your-domain.com
+# Optional — fallbacks only. The platform owner edits both values in
+# Admin → Settings; these are used when the database value is missing.
+NEXT_PUBLIC_SUPPORT_EMAIL=support@your-domain.com
+NEXT_PUBLIC_SUPPORT_WHATSAPP=201234567890
 ```
 
 `NEXT_PUBLIC_APP_URL` is not cosmetic: it is the origin used for invitation and password-reset

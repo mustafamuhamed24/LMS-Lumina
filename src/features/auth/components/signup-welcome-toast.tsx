@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react';
 import { toast } from 'sonner';
+import { useTranslator } from '@/lib/i18n/client';
 
 /**
  * Shows a one-time confirmation after signup. Learnova confirms new accounts
@@ -9,19 +10,21 @@ import { toast } from 'sonner';
  * reassures people that their workspace is ready.
  */
 export function SignupWelcomeToast() {
+  const t = useTranslator();
+
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     if (params.get('welcome') !== '1') return;
 
-    toast.success('Welcome to Learnova', {
-      description: 'Your account is ready — no email verification needed.',
+    toast.success(t('signup.welcomeTitle'), {
+      description: t('signup.welcomeBody'),
       duration: 6000,
     });
 
     params.delete('welcome');
     const query = params.toString();
     window.history.replaceState(null, '', `${window.location.pathname}${query ? `?${query}` : ''}`);
-  }, []);
+  }, [t]);
 
   return null;
 }

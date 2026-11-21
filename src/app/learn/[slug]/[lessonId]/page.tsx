@@ -175,7 +175,7 @@ export default async function LearnLessonPage({
   );
 
   return (
-    <div className="min-h-dvh bg-muted/20">
+    <div className="min-h-dvh bg-muted/20 pb-24 lg:pb-8">
       <header className="sticky top-0 z-30 border-b bg-background/90 backdrop-blur-md">
         <div className="flex h-14 items-center justify-between gap-3 px-3 sm:px-5">
           <div className="flex min-w-0 items-center gap-3">

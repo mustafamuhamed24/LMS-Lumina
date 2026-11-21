@@ -58,6 +58,23 @@ export function PlatformSettingsForm({ settings }: { settings: PlatformSettingsR
               />
             </div>
             <div className="space-y-2">
+              <Label htmlFor="platform-whatsapp">Support WhatsApp</Label>
+              <Input
+                id="platform-whatsapp"
+                name="supportWhatsapp"
+                type="tel"
+                inputMode="tel"
+                defaultValue={settings?.support_whatsapp ?? ''}
+                placeholder="+201090861914"
+              />
+              <p className="text-xs text-muted-foreground">
+                International format. Leave empty to hide the WhatsApp button.
+              </p>
+              {state.fieldErrors?.supportWhatsapp ? (
+                <p className="text-xs text-destructive">{state.fieldErrors.supportWhatsapp[0]}</p>
+              ) : null}
+            </div>
+            <div className="space-y-2">
               <Label htmlFor="platform-color">Brand colour</Label>
               <Input
                 id="platform-color"

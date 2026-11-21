@@ -41,13 +41,15 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
   ]);
   const supportEmail =
     settings?.support_email || process.env.NEXT_PUBLIC_SUPPORT_EMAIL || 'support@learnova.test';
+  const supportWhatsapp =
+    settings?.support_whatsapp ?? process.env.NEXT_PUBLIC_SUPPORT_WHATSAPP ?? '+201090861914';
 
   return (
     <html lang={locale} dir={dirFor(locale)} suppressHydrationWarning>
       <body className="min-h-dvh antialiased">
         <Providers locale={locale}>
           {children}
-          <SupportWidget email={supportEmail} whatsapp={process.env.NEXT_PUBLIC_SUPPORT_WHATSAPP} />
+          <SupportWidget email={supportEmail} whatsapp={supportWhatsapp} />
         </Providers>
       </body>
     </html>

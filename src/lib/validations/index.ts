@@ -30,6 +30,16 @@ const optionalText = (max: number) =>
     .transform((value) => (value && value.length > 0 ? value : null));
 
 const hexColor = z.string().trim().regex(/^#[0-9a-fA-F]{6}$/, 'Use a hex colour such as #4f46e5');
+const whatsappNumber = z
+  .string()
+  .trim()
+  .max(24)
+  .refine(
+    (value) => value === '' || /^\+?[0-9][0-9\s()-]{6,22}$/.test(value),
+    'Enter a phone number in international format, such as +201090861914',
+  )
+  .optional()
+  .transform((value) => (value && value.length > 0 ? value : null));
 export const checkbox = z.preprocess((value) => value === 'on' || value === 'true' || value === true, z.boolean());
 
 const multilineList = (maxItems: number, maxLength: number) =>
@@ -150,6 +160,7 @@ export const platformSettingsSchema = z.object({
   platformName: text(2, 80, 'Platform name'),
   tagline: text(2, 160, 'Tagline'),
   supportEmail: email,
+  supportWhatsapp: whatsappNumber,
   logoUrl: optionalText(500),
   allowSignups: checkbox,
   requireEnrollmentApproval: checkbox,

@@ -4,6 +4,22 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { EyeOff, Lock, Play, ShieldCheck } from 'lucide-react';
 import { useTranslator } from '@/lib/i18n/client';
 
+/** Suppress the browser's save, print and view-source shortcuts on a lesson. */
+function useBlockedShortcuts() {
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      const modifier = event.ctrlKey || event.metaKey;
+      if (modifier && ['s', 'p', 'u'].includes(event.key.toLowerCase())) {
+        event.preventDefault();
+      }
+    };
+
+    document.addEventListener('keydown', onKeyDown);
+    return () => document.removeEventListener('keydown', onKeyDown);
+  }, []);
+}
+
+
 /**
  * Deterrent player for course videos. Browsers cannot technically prevent OS
  * or hardware screen recording, so this layer removes the easy paths and makes
@@ -29,6 +45,7 @@ export function ProtectedVideo({
   const videoRef = useRef<HTMLVideoElement>(null);
   const [interrupted, setInterrupted] = useState(false);
   const label = watermark?.trim() || 'Learnova';
+  useBlockedShortcuts();
 
   const pauseForPrivacy = useCallback(() => {
     const video = videoRef.current;
@@ -43,21 +60,13 @@ export function ProtectedVideo({
     const onVisibility = () => {
       if (document.hidden) pauseForPrivacy();
     };
-    const onKeyDown = (event: KeyboardEvent) => {
-      const modifier = event.ctrlKey || event.metaKey;
-      if (modifier && ['s', 'p', 'u'].includes(event.key.toLowerCase())) {
-        event.preventDefault();
-      }
-    };
 
     window.addEventListener('blur', onBlur);
     document.addEventListener('visibilitychange', onVisibility);
-    document.addEventListener('keydown', onKeyDown);
 
     return () => {
       window.removeEventListener('blur', onBlur);
       document.removeEventListener('visibilitychange', onVisibility);
-      document.removeEventListener('keydown', onKeyDown);
     };
   }, [pauseForPrivacy]);
 
@@ -149,6 +158,7 @@ export function ProtectedEmbed({
 }) {
   const t = useTranslator();
   const label = watermark?.trim() || 'Learnova';
+  useBlockedShortcuts();
 
   return (
     <div

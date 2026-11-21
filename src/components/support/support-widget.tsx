@@ -49,7 +49,7 @@ export function SupportWidget({
   const waNumber = whatsapp?.trim();
 
   return (
-    <div ref={rootRef} className="fixed bottom-5 end-5 z-50 flex flex-col items-end gap-3 print:hidden">
+    <div ref={rootRef} className="fixed bottom-5 end-5 z-50 flex flex-col items-end gap-3 pointer-events-none print:hidden">
       <div
         role="dialog"
         aria-label={t('support.title')}
@@ -117,7 +117,7 @@ export function SupportWidget({
         aria-haspopup="dialog"
         onClick={() => setOpen((value) => !value)}
         className={cn(
-          'group flex size-14 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-[0_12px_30px_-10px_color-mix(in_oklch,var(--primary)_65%,transparent)] outline-none transition-transform hover:scale-105 focus-visible:ring-4 focus-visible:ring-ring/30',
+          'group pointer-events-auto flex size-14 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-[0_12px_30px_-10px_color-mix(in_oklch,var(--primary)_65%,transparent)] outline-none transition-transform hover:scale-105 focus-visible:ring-4 focus-visible:ring-ring/30',
           open && 'rotate-6',
         )}
       >

@@ -176,6 +176,12 @@
     display: none;
   }
 
+  @media print {
+    [data-protected-video] {
+      display: none !important;
+    }
+  }
+
   h1,
   h2,
   h3,
