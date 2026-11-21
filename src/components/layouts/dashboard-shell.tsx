@@ -7,6 +7,7 @@ import {
   Bell,
   CheckCheck,
   ChevronDown,
+  Loader2,
   LogOut,
   Menu,
   PanelLeftClose,
@@ -155,7 +156,8 @@ function NotificationMenu({
           </div>
           {unread > 0 ? (
             <Button variant="ghost" size="sm" className="h-7 gap-1 px-2 text-[11px]" onClick={markAll} disabled={isPending}>
-              <CheckCheck className="size-3" /> {t('common.markAllRead')}
+              {isPending ? <Loader2 className="size-3 animate-spin" /> : <CheckCheck className="size-3" />}{' '}
+              {isPending ? t('common.marking') : t('common.markAllRead')}
             </Button>
           ) : null}
         </div>

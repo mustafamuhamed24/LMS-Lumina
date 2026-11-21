@@ -7,6 +7,7 @@ import {
 import type { Database } from '@/types/database';
 import { PageHeader } from '@/components/dashboard/page-header';
 import { EmptyState } from '@/components/shared/empty-state';
+import { SubmitButton } from '@/components/forms/submit-button';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -46,9 +47,9 @@ export function NotificationList({
         actions={
           unreadCount ? (
             <form action={markAllNotificationsReadFormAction}>
-              <Button type="submit" variant="outline">
+              <SubmitButton variant="outline" pendingLabel="Marking…">
                 <CheckCheck /> Mark all read
-              </Button>
+              </SubmitButton>
             </form>
           ) : null
         }
@@ -103,9 +104,9 @@ export function NotificationList({
                   {!notification.read_at ? (
                     <form action={markNotificationReadFormAction}>
                       <input type="hidden" name="notificationId" value={notification.id} />
-                      <Button type="submit" variant="ghost" size="sm">
+                      <SubmitButton variant="ghost" size="sm" pendingLabel="Marking…">
                         Mark read
-                      </Button>
+                      </SubmitButton>
                     </form>
                   ) : null}
                 </li>

@@ -1,7 +1,9 @@
 import type { Metadata, Viewport } from 'next';
+import { Suspense } from 'react';
 import './globals.css';
 import { Providers } from '@/components/providers';
 import { SupportWidget } from '@/components/support/support-widget';
+import { NavigationProgress } from '@/components/shared/navigation-progress';
 import { dirFor } from '@/lib/i18n/config';
 import { getLocale } from '@/lib/i18n/server';
 import { getPlatformSettings } from '@/lib/data/settings';
@@ -48,6 +50,9 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
     <html lang={locale} dir={dirFor(locale)} suppressHydrationWarning>
       <body className="min-h-dvh antialiased">
         <Providers locale={locale}>
+          <Suspense fallback={null}>
+            <NavigationProgress />
+          </Suspense>
           {children}
           <SupportWidget email={supportEmail} whatsapp={supportWhatsapp} />
         </Providers>
